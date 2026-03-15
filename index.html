@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TKS Services — Professional Mobile Valeting & Detailing</title>
+<meta name="description" content="Professional mobile car valeting and detailing across the UK. Premium hand washes, ceramic protection, interior cleans, and machine polishing. Book your slot online.">
+
+<!-- Open Graph -->
+<meta property="og:title" content="TKS Services — Mobile Valeting & Detailing">
+<meta property="og:description" content="Professional mobile car valeting and detailing across the UK. Book your slot online.">
+<meta property="og:type" content="website">
+
+<!-- Fonts -->
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&f[]=satoshi@300,400,500,600,700&display=swap" rel="stylesheet">
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js" defer></script>
+
+<link rel="stylesheet" href="./base.css">
+<link rel="stylesheet" href="./style.css?v=5">
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a href="#" class="header__logo" onclick="event.preventDefault(); window.scrollTo({top:0, behavior:'smooth'})">
+      <img src="./assets/logo.png" alt="TKS Services logo" width="120" height="44">
+    </a>
+    
+    <nav class="nav-desktop">
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#how-it-works" class="nav-link">How It Works</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a href="#booking" class="nav-link nav-link--cta">Book Now</a>
+    </nav>
+
+    <div style="display:flex;align-items:center;gap:var(--space-2)">
+      <button class="theme-toggle nav-mobile-only" data-theme-toggle aria-label="Toggle theme" style="display:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="nav-mobile-toggle" aria-label="Open navigation" onclick="document.getElementById('mobileNav').classList.add('open')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Nav -->
+<div class="nav-mobile" id="mobileNav">
+  <button class="nav-mobile__close" aria-label="Close navigation" onclick="document.getElementById('mobileNav').classList.remove('open')">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <a href="#services" class="nav-mobile__link" onclick="document.getElementById('mobileNav').classList.remove('open')">Services</a>
+  <a href="#how-it-works" class="nav-mobile__link" onclick="document.getElementById('mobileNav').classList.remove('open')">How It Works</a>
+  <a href="#about" class="nav-mobile__link" onclick="document.getElementById('mobileNav').classList.remove('open')">About</a>
+  <a href="#faq" class="nav-mobile__link" onclick="document.getElementById('mobileNav').classList.remove('open')">FAQ</a>
+  <a href="#booking" class="btn btn--primary btn--lg" style="margin-top:auto" onclick="document.getElementById('mobileNav').classList.remove('open')">Book Now</a>
+</div>
+
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero__bg">
+    <img src="./assets/hero-bg.jpg" alt="Professional car detailing" width="1920" height="1080" loading="eager">
+  </div>
+  <div class="hero__overlay"></div>
+  <div class="container hero__content">
+    <div class="hero__badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Mobile Valeting & Detailing
+    </div>
+    <h1 class="hero__title">Clean. Protect.<br><span>Impress.</span></h1>
+    <p class="hero__subtitle">Professional mobile valeting that comes to you. Premium products, safe techniques, and a finish that turns heads.</p>
+    <div class="hero__actions">
+      <a href="#booking" class="btn btn--primary btn--lg">Book Your Valet</a>
+      <a href="#services" class="btn btn--secondary btn--lg">View Services</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== MONTHLY SUBSCRIPTION HERO BANNER ===== -->
+<section class="sub-hero reveal">
+  <div class="container">
+    <div class="sub-hero__inner">
+      <div class="sub-hero__image">
+        <img src="./assets/monthly-subscription-new.png" alt="Monthly valet subscription" width="1024" height="768" loading="eager">
+      </div>
+      <div class="sub-hero__content">
+        <div class="sub-hero__badge">Most Popular Plan</div>
+        <h2 class="sub-hero__title">Monthly Valet Subscription</h2>
+        <p class="sub-hero__desc">Keep your vehicle spotless year-round. We start with a full deep clean, then maintain it every month so it always looks showroom-ready.</p>
+        <div class="sub-hero__pricing">
+          <div class="sub-hero__price-block">
+            <span class="sub-hero__price">£40</span>
+            <span class="sub-hero__price-label">/month</span>
+          </div>
+          <div class="sub-hero__initial">
+            <span>£99 initial deep clean</span>
+          </div>
+        </div>
+        <div class="sub-hero__features">
+          <div class="sub-hero__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Monthly maintenance visit</div>
+          <div class="sub-hero__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Professional standard guaranteed</div>
+          <div class="sub-hero__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Cancel anytime</div>
+        </div>
+        <button class="btn btn--primary btn--lg" onclick="openSubscriptionFlow()">Get Started</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== HOW IT WORKS ===== -->
+<section id="how-it-works" class="reveal">
+  <div class="container">
+    <div class="section-header section-header--center">
+      <p class="section-label">How It Works</p>
+      <h2 class="section-title">Booked in 60 Seconds</h2>
+      <p class="section-desc">Choose your service, pick a date and time, and we'll come to you. Simple as that.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step">
+        <h3>Choose a Service</h3>
+        <p>From a quick ceramic wash to a full prestige detail — pick what suits your car.</p>
+      </div>
+      <div class="process-step">
+        <h3>Pick Your Slot</h3>
+        <p>Select a date and time that works for you. See live availability instantly.</p>
+      </div>
+      <div class="process-step">
+        <h3>We Come to You</h3>
+        <p>Our team arrives at your location with everything needed for a perfect finish.</p>
+      </div>
+      <div class="process-step">
+        <h3>Enjoy the Shine</h3>
+        <p>Drive away in a car that looks and feels brand new. Every single time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== SERVICES ===== -->
+<section id="services" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Our Services</p>
+      <h2 class="section-title">Valeting Packages</h2>
+      <p class="section-desc">Every service is carried out with care, precision, and premium products. Choose the level of detail your vehicle deserves.</p>
+    </div>
+
+    <div class="services-grid">
+      <!-- Monthly Subscription -->
+      <div class="service-card service-card--subscription">
+        <div class="service-card__image">
+          <img src="./assets/monthly-subscription-new.png" alt="Monthly valet subscription" width="1024" height="768" loading="lazy">
+          <div class="service-card__subscription-badge">Subscription</div>
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__header">
+            <h3 class="service-card__name">Monthly Valet</h3>
+            <div class="service-card__price">
+              <span class="service-card__price-monthly">£40/mo</span>
+            </div>
+          </div>
+          <p class="service-card__desc">A recurring maintenance plan. We deep clean your vehicle first (£99), then keep it spotless with a monthly visit.</p>
+          <ul class="service-card__features" role="list">
+            <li>£99 initial deep clean</li>
+            <li>Monthly maintenance valet</li>
+            <li>Professional standard</li>
+            <li>Cancel anytime</li>
+          </ul>
+          <button class="btn btn--primary service-card__cta" onclick="openSubscriptionFlow()">Get Started — £40/mo</button>
+        </div>
+      </div>
+
+      <!-- Ceramic Wash -->
+      <div class="service-card">
+        <div class="service-card__image">
+          <img src="./assets/ceramic-wash-new.png" alt="Ceramic wash service" width="1024" height="1024" loading="lazy">
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__header">
+            <h3 class="service-card__name">Ceramic Wash</h3>
+            <div class="service-card__price">£25</div>
+          </div>
+          <p class="service-card__desc">A high-gloss wash with ceramic protection that leaves a brilliant shield on your paintwork.</p>
+          <ul class="service-card__features" role="list">
+            <li>Pre-wash</li>
+            <li>Exterior shampoo</li>
+            <li>Rinse & dry</li>
+            <li>Ceramic sealant</li>
+            <li>Tyre shine</li>
+          </ul>
+          <button class="btn btn--dark service-card__cta" onclick="startBooking('ceramic-wash', 'Ceramic Wash', 25)">Book — £25</button>
+        </div>
+      </div>
+
+      <!-- Essential Valet -->
+      <div class="service-card">
+        <div class="service-card__image">
+          <img src="./assets/essential-valet-new.png" alt="Essential valet service" width="1024" height="1024" loading="lazy">
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__header">
+            <h3 class="service-card__name">Essential Valet</h3>
+            <div class="service-card__price">£45</div>
+          </div>
+          <p class="service-card__desc">A quick refresh to keep your vehicle looking sharp, inside and out.</p>
+          <ul class="service-card__features" role="list">
+            <li>Pre-wash</li>
+            <li>Exterior shampoo</li>
+            <li>Windows</li>
+            <li>Interior vacuum</li>
+            <li>Trim wipe-down</li>
+            <li>Wheels</li>
+            <li>Tyre shine</li>
+          </ul>
+          <button class="btn btn--dark service-card__cta" onclick="startBooking('essential-valet', 'Essential Valet', 45)">Book — £45</button>
+        </div>
+      </div>
+
+      <!-- Signature Valet -->
+      <div class="service-card service-card--best-seller">
+        <div class="service-card__image">
+          <img src="./assets/signature-valet-new.png" alt="Signature valet service" width="1024" height="1024" loading="lazy">
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__header">
+            <h3 class="service-card__name">Signature Valet</h3>
+            <div class="service-card__price">
+              <span class="old-price">£99</span>
+              £90
+            </div>
+          </div>
+          <p class="service-card__desc">Complete care with added shine and protection. Our most popular choice for good reason.</p>
+          <ul class="service-card__features" role="list">
+            <li>Pre-wash</li>
+            <li>Hand polish</li>
+            <li>Exterior shampoo</li>
+            <li>Plastics dressed</li>
+            <li>Windows</li>
+            <li>Wheels</li>
+            <li>Interior vacuum</li>
+            <li>Door seals</li>
+            <li>Trims</li>
+          </ul>
+          <button class="btn btn--primary service-card__cta" onclick="startBooking('signature-valet', 'Signature Valet', 90)">Book — £90</button>
+        </div>
+      </div>
+
+      <!-- Prestige Valet -->
+      <div class="service-card">
+        <div class="service-card__image">
+          <img src="./assets/prestige-valet-new.png" alt="Prestige valet service" width="1024" height="1024" loading="lazy">
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__header">
+            <h3 class="service-card__name">Prestige Valet</h3>
+            <div class="service-card__price">£130</div>
+          </div>
+          <p class="service-card__desc">The ultimate deep clean — inside and out. Every surface restored to showroom condition.</p>
+          <ul class="service-card__features" role="list">
+            <li>Full exterior</li>
+            <li>Full interior</li>
+            <li>Wet vacuum</li>
+            <li>Carpet shampoo</li>
+            <li>Seat shampoo</li>
+            <li>Hand polish</li>
+            <li>Plastics dressed</li>
+            <li>Door seals</li>
+          </ul>
+          <button class="btn btn--dark service-card__cta" onclick="startBooking('prestige-valet', 'Prestige Valet', 130)">Book — £130</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add-ons -->
+    <div class="mt-8 reveal">
+      <h3 style="font-family:var(--font-display);font-weight:700;font-size:var(--text-lg);margin-bottom:var(--space-5)">Add-on Services</h3>
+      <div class="addons-grid">
+        <div class="addon-card">
+          <div class="addon-card__info">
+            <h3>Machine Polish</h3>
+            <p>Removes swirls, restores shine</p>
+          </div>
+          <div class="addon-card__price">£100</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card__info">
+            <h3>Steam Clean</h3>
+            <p>Deep-clean seats & surfaces</p>
+          </div>
+          <div class="addon-card__price">£30</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card__info">
+            <h3>Engine Bay Detail</h3>
+            <p>Degrease, clean & protect</p>
+          </div>
+          <div class="addon-card__price">£30</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card__info">
+            <h3>Motorbike Valet</h3>
+            <p>Specialist motorcycle clean</p>
+          </div>
+          <div class="addon-card__price">£30</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card__info">
+            <h3>Pet Hair Removal</h3>
+            <p>Deep extraction from interiors</p>
+          </div>
+          <div class="addon-card__price">£15</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card__info">
+            <h3>Tar Removal</h3>
+            <p>Specialist bodywork treatment</p>
+          </div>
+          <div class="addon-card__price">£10</div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+
+<!-- ===== SUBSCRIPTION ONBOARDING MODAL ===== -->
+<div class="sub-modal-overlay" id="subModal">
+  <div class="sub-modal">
+    <button class="sub-modal__close" onclick="closeSubscriptionFlow()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+
+    <!-- Progress -->
+    <div class="sub-modal__progress">
+      <div class="sub-step active" data-sub-step="1"><span>1</span> Vehicle</div>
+      <div class="sub-step" data-sub-step="2"><span>2</span> Schedule</div>
+      <div class="sub-step" data-sub-step="3"><span>3</span> Details</div>
+      <div class="sub-step" data-sub-step="4"><span>4</span> Confirm</div>
+    </div>
+
+    <!-- Step 1: Vehicle Info -->
+    <div class="sub-panel" id="subStep1">
+      <div class="sub-panel__header">
+        <h3>Tell Us About Your Vehicle</h3>
+        <p>We need a few details to get you started on the monthly plan.</p>
+      </div>
+
+      <div class="sub-form-group">
+        <label for="subVehicleMake">Vehicle Make & Model <span class="req">*</span></label>
+        <input type="text" id="subVehicleMake" class="form-input" placeholder="e.g. BMW 3 Series" required>
+      </div>
+      <div class="sub-form-row">
+        <div class="sub-form-group">
+          <label for="subVehicleReg">Registration</label>
+          <input type="text" id="subVehicleReg" class="form-input" placeholder="e.g. AB12 CDE">
+        </div>
+        <div class="sub-form-group">
+          <label for="subVehicleColour">Colour</label>
+          <input type="text" id="subVehicleColour" class="form-input" placeholder="e.g. Black">
+        </div>
+      </div>
+      <div class="sub-form-group">
+        <label for="subVehicleCondition">Current Condition</label>
+        <div class="sub-condition-options" id="conditionOptions">
+          <button type="button" class="sub-condition-btn" onclick="selectCondition(this, 'Excellent')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            Excellent
+          </button>
+          <button type="button" class="sub-condition-btn" onclick="selectCondition(this, 'Good')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            Good
+          </button>
+          <button type="button" class="sub-condition-btn" onclick="selectCondition(this, 'Needs Work')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            Needs Work
+          </button>
+        </div>
+      </div>
+
+      <div class="sub-info-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div>
+          <strong>How it works:</strong> We'll start with a £99 initial deep clean to bring your vehicle up to our professional standard. After that, you'll receive a monthly maintenance valet for just £40/month.
+        </div>
+      </div>
+
+      <div class="sub-nav">
+        <div></div>
+        <button class="btn btn--dark" id="subStep1Next" onclick="goSubStep(2)">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Schedule first deep clean -->
+    <div class="sub-panel hidden" id="subStep2">
+      <div class="sub-panel__header">
+        <h3>Book Your Initial Deep Clean</h3>
+        <p>Pick a date and time for your first visit (£99). This brings your vehicle up to our standard before monthly maintenance begins.</p>
+      </div>
+
+      <div class="sub-form-group">
+        <label>Preferred Day of Week for Monthly Visits</label>
+        <div class="sub-day-grid" id="subDayGrid">
+          <button type="button" class="sub-day-btn" onclick="selectSubDay(this, 'Monday')">Mon</button>
+          <button type="button" class="sub-day-btn" onclick="selectSubDay(this, 'Tuesday')">Tue</button>
+          <button type="button" class="sub-day-btn" onclick="selectSubDay(this, 'Wednesday')">Wed</button>
+          <button type="button" class="sub-day-btn" onclick="selectSubDay(this, 'Thursday')">Thu</button>
+          <button type="button" class="sub-day-btn" onclick="selectSubDay(this, 'Friday')">Fri</button>
+          <button type="button" class="sub-day-btn" onclick="selectSubDay(this, 'Saturday')">Sat</button>
+        </div>
+      </div>
+
+      <div class="sub-form-group">
+        <label>Preferred Time Window</label>
+        <div class="sub-time-grid" id="subTimeGrid">
+          <button type="button" class="sub-time-btn" onclick="selectSubTime(this, 'Morning (8am-12pm)')">Morning<span>8am–12pm</span></button>
+          <button type="button" class="sub-time-btn" onclick="selectSubTime(this, 'Afternoon (12pm-4pm)')">Afternoon<span>12pm–4pm</span></button>
+          <button type="button" class="sub-time-btn" onclick="selectSubTime(this, 'Evening (4pm-7pm)')">Evening<span>4pm–7pm</span></button>
+        </div>
+      </div>
+
+      <div class="sub-form-group">
+        <label for="subStartDate">When would you like to start?</label>
+        <input type="date" id="subStartDate" class="form-input" min="">
+      </div>
+
+      <div class="sub-nav">
+        <button class="btn btn--outline" onclick="goSubStep(1)">Back</button>
+        <button class="btn btn--dark" onclick="goSubStep(3)">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Personal details -->
+    <div class="sub-panel hidden" id="subStep3">
+      <div class="sub-panel__header">
+        <h3>Your Details</h3>
+        <p>We need your contact info and location so we can come to you.</p>
+      </div>
+
+      <div class="sub-form-row">
+        <div class="sub-form-group">
+          <label for="subName">Full Name <span class="req">*</span></label>
+          <input type="text" id="subName" class="form-input" placeholder="John Smith" required>
+        </div>
+        <div class="sub-form-group">
+          <label for="subPhone">Phone Number <span class="req">*</span></label>
+          <input type="tel" id="subPhone" class="form-input" placeholder="07xxx xxxxxx" required>
+        </div>
+      </div>
+      <div class="sub-form-row">
+        <div class="sub-form-group">
+          <label for="subEmail">Email <span class="req">*</span></label>
+          <input type="email" id="subEmail" class="form-input" placeholder="john@example.com" required>
+        </div>
+        <div class="sub-form-group">
+          <label for="subPostcode">Postcode <span class="req">*</span></label>
+          <input type="text" id="subPostcode" class="form-input" placeholder="CW7 1AB" required>
+        </div>
+      </div>
+      <div class="sub-form-group">
+        <label for="subAddress">Full Address</label>
+        <textarea id="subAddress" class="form-input" rows="2" placeholder="Street address, town..."></textarea>
+      </div>
+      <div class="sub-form-group">
+        <label for="subNotes">Anything else we should know?</label>
+        <textarea id="subNotes" class="form-input" rows="2" placeholder="e.g. Parking info, pets, gate code..."></textarea>
+      </div>
+
+      <div class="sub-nav">
+        <button class="btn btn--outline" onclick="goSubStep(2)">Back</button>
+        <button class="btn btn--dark" onclick="goSubStep(4)">Review & Confirm</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Review & Confirm -->
+    <div class="sub-panel hidden" id="subStep4">
+      <div class="sub-panel__header">
+        <h3>Review Your Subscription</h3>
+        <p>Check everything looks right, then confirm to get started.</p>
+      </div>
+
+      <div class="sub-summary" id="subSummary">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="sub-price-summary">
+        <div class="sub-price-summary__row">
+          <span>Initial Deep Clean (one-time)</span>
+          <strong>£99</strong>
+        </div>
+        <div class="sub-price-summary__row">
+          <span>Monthly Maintenance Valet</span>
+          <strong>£40/month</strong>
+        </div>
+        <div class="sub-price-summary__divider"></div>
+        <div class="sub-price-summary__row sub-price-summary__row--note">
+          <span>Payment details will be arranged separately. This booking secures your spot on our monthly plan.</span>
+        </div>
+      </div>
+
+      <div class="sub-nav">
+        <button class="btn btn--outline" onclick="goSubStep(3)">Back</button>
+        <button class="btn btn--primary btn--lg" id="subConfirmBtn" onclick="submitSubscription()">Confirm Subscription</button>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="sub-panel hidden" id="subSuccess">
+      <div class="sub-success">
+        <div class="sub-success__icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h3>You're Subscribed</h3>
+        <p id="subSuccessMsg">Welcome to the monthly plan. We'll be in touch to confirm your first deep clean appointment.</p>
+        <div class="sub-success__actions">
+          <a href="https://wa.me/447404758825?text=Hi%2C%20I%20just%20signed%20up%20for%20the%20monthly%20subscription" target="_blank" rel="noopener noreferrer" class="btn btn--dark">Message Us on WhatsApp</a>
+          <button class="btn btn--outline" onclick="closeSubscriptionFlow()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== BOOKING ===== -->
+<section id="booking" class="reveal">
+  <div class="container">
+    <div class="section-header section-header--center">
+      <p class="section-label">Book Online</p>
+      <h2 class="section-title">Book Your Valet</h2>
+      <p class="section-desc">Choose your service, pick a date and time, and fill in your details. We'll confirm your booking instantly.</p>
+    </div>
+
+    <div class="booking-container">
+      <!-- Progress steps -->
+      <div class="booking-steps" id="bookingSteps">
+        <div class="booking-step active" data-step="1">
+          <span class="booking-step__number">1</span>
+          Service
+        </div>
+        <div class="booking-step" data-step="2">
+          <span class="booking-step__number">2</span>
+          Date & Time
+        </div>
+        <div class="booking-step" data-step="3">
+          <span class="booking-step__number">3</span>
+          Your Details
+        </div>
+      </div>
+
+      <!-- Step 1: Select Service + Add-ons -->
+      <div class="booking-panel" id="step1">
+        <h3 class="booking-panel__title">Select Your Service</h3>
+        <div class="service-select-grid" id="serviceList">
+          <!-- populated by JS -->
+        </div>
+
+        <div id="addonsSection" class="addons-booking-section hidden">
+          <h3 class="booking-panel__subtitle">Add Extras</h3>
+          <p class="addons-hint">Optional — enhance your valet with any of these.</p>
+          <div class="addon-toggle-grid" id="addonList">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- Running total -->
+        <div id="cartTotal" class="cart-total hidden">
+          <div class="cart-total__items" id="cartItems"></div>
+          <div class="cart-total__line"></div>
+          <div class="cart-total__row cart-total__row--total">
+            <span>Total</span>
+            <strong id="cartTotalPrice">£0</strong>
+          </div>
+        </div>
+
+        <div class="booking-nav">
+          <div></div>
+          <button class="btn btn--dark" id="step1Next" disabled onclick="goToStep(2)">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Date & Time -->
+      <div class="booking-panel hidden" id="step2">
+        <h3 class="booking-panel__title">Pick a Date</h3>
+        <div class="date-grid" id="dateGrid">
+          <!-- populated by JS -->
+        </div>
+
+        <div id="timeSlotsContainer" class="hidden mt-6">
+          <h3 class="booking-panel__title">Choose a Time</h3>
+          <div id="timeSlotsContent">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <div class="booking-nav">
+          <button class="btn btn--outline" onclick="goToStep(1)">Back</button>
+          <button class="btn btn--dark" id="step2Next" disabled onclick="goToStep(3)">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Details & Confirm -->
+      <div class="booking-panel hidden" id="step3">
+        <h3 class="booking-panel__title">Your Details</h3>
+        
+        <div class="booking-summary" id="bookingSummary">
+          <!-- populated by JS -->
+        </div>
+
+        <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customerName">Full Name <span>*</span></label>
+              <input type="text" id="customerName" class="form-input" required placeholder="John Smith">
+            </div>
+            <div class="form-group">
+              <label for="customerPhone">Phone Number <span>*</span></label>
+              <input type="tel" id="customerPhone" class="form-input" required placeholder="07xxx xxxxxx">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customerEmail">Email</label>
+              <input type="email" id="customerEmail" class="form-input" placeholder="john@example.com">
+            </div>
+            <div class="form-group">
+              <label for="customerVehicle">Vehicle (Make / Model)</label>
+              <input type="text" id="customerVehicle" class="form-input" placeholder="e.g. BMW 3 Series">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="customerNotes">Notes (optional)</label>
+            <textarea id="customerNotes" class="form-input" rows="3" placeholder="Any special requests or your location address..."></textarea>
+          </div>
+
+          <div class="booking-nav">
+            <button type="button" class="btn btn--outline" onclick="goToStep(2)">Back</button>
+            <button type="submit" class="btn btn--primary btn--lg" id="submitBtn">Confirm Booking</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success -->
+      <div class="booking-panel hidden" id="bookingSuccessPanel">
+        <div class="booking-success">
+          <div class="booking-success__icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <h3>Booking Confirmed</h3>
+          <p id="successMessage">Your valet has been booked. We'll see you soon.</p>
+          <a href="https://wa.me/447404758825" target="_blank" rel="noopener noreferrer" class="btn btn--dark">Message Us on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== ABOUT / WHY US ===== -->
+<section id="about" class="reveal">
+  <div class="container">
+    <div class="why-grid">
+      <div class="why-image">
+        <img src="./assets/wash-hero-1.jpg" alt="Professional car detailing in progress" width="640" height="480" loading="lazy">
+      </div>
+      <div>
+        <p class="section-label">Why TKS</p>
+        <h2 class="section-title" style="margin-bottom:var(--space-6)">We Come to You</h2>
+        <div class="why-points">
+          <div class="why-point">
+            <div class="why-point__icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <h3>Mobile Service</h3>
+              <p>We bring everything to your doorstep — home, work, wherever suits you best.</p>
+            </div>
+          </div>
+          <div class="why-point">
+            <div class="why-point__icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            </div>
+            <div>
+              <h3>Premium Products</h3>
+              <p>Safe wash techniques and trusted ceramic products for consistent, high-standard results every time.</p>
+            </div>
+          </div>
+          <div class="why-point">
+            <div class="why-point__icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div>
+              <h3>Attention to Detail</h3>
+              <p>From wheels and trims to interiors and finishing touches — nothing gets missed.</p>
+            </div>
+          </div>
+          <div class="why-point">
+            <div class="why-point__icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div>
+              <h3>Easy Online Booking</h3>
+              <p>Pick your service, choose a slot, and you're sorted. No phone tag, no hassle.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== TESTIMONIALS ===== -->
+<section id="testimonials" style="background:var(--color-surface-2)" class="reveal">
+  <div class="container">
+    <div class="section-header section-header--center">
+      <p class="section-label">Testimonials</p>
+      <h2 class="section-title">What Our Customers Say</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-card__stars">★★★★★</div>
+        <p class="testimonial-card__text">"The team at TKS is reliable and professional. Booking was easy, and the valet service exceeded my expectations. My BMW looks brand new."</p>
+        <p class="testimonial-card__author">Sarah M.</p>
+        <p class="testimonial-card__vehicle">BMW Owner</p>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-card__stars">★★★★★</div>
+        <p class="testimonial-card__text">"Absolutely fantastic service. They came to my house, did a thorough clean inside and out, and the ceramic finish is incredible. Will be using the monthly subscription for sure."</p>
+        <p class="testimonial-card__author">Ahmed R.</p>
+        <p class="testimonial-card__vehicle">Audi A6 Owner</p>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-card__stars">★★★★★</div>
+        <p class="testimonial-card__text">"Best valeting service I've used. The attention to detail is second to none. Even the door seals and trims were spotless. Highly recommend the Signature Valet."</p>
+        <p class="testimonial-card__author">James T.</p>
+        <p class="testimonial-card__vehicle">Mercedes C-Class Owner</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FAQ ===== -->
+<section id="faq" class="reveal">
+  <div class="container">
+    <div class="section-header section-header--center">
+      <p class="section-label">FAQ</p>
+      <h2 class="section-title">Common Questions</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What types of vehicles do you service?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer">We service all types of vehicles — from everyday cars to luxury sports cars and motorcycles. Whatever you drive, we'll take great care of it.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          How long does a valet take?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer">It depends on the service: a Ceramic Wash takes around 30 minutes, an Essential Valet about 1 hour, a Signature Valet around 2 hours, and a Prestige Valet can take up to 3 hours. We never rush — quality comes first.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Are your products safe for all surfaces?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer">Yes, we use premium, pH-neutral products that are safe for all paint finishes, interior materials, and delicate surfaces. Our techniques are designed to clean without causing any damage.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Do I need to provide water or electricity?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer">Ideally, yes — access to a water tap nearby helps. However, let us know your situation and we'll do our best to accommodate. We carry our own equipment and can often work with limited access.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can I cancel or reschedule?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer">Absolutely. Just message us on WhatsApp or give us a call and we'll sort it out. We appreciate at least 24 hours notice where possible.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Where do you operate?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer">We deliver professional mobile valeting across the UK. Just let us know your location when you book and we'll confirm coverage.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <h3>TKS Services</h3>
+        <p>Professional mobile valeting and detailing. We come to you with premium products and safe wash techniques. Clean. Protect. Impress.</p>
+        <div style="margin-top:var(--space-4)">
+          <div class="footer__contact-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <a href="tel:07404758825">07404 758825</a>
+          </div>
+          <div class="footer__contact-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+            <a href="mailto:Tksservices1@outlook.com">Tksservices1@outlook.com</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Quick Links</h4>
+        <a href="#services">Services</a>
+        <a href="#booking">Book Now</a>
+        <a href="#about">About Us</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer__col">
+        <h4>Services</h4>
+        <a href="#services">Ceramic Wash</a>
+        <a href="#services">Essential Valet</a>
+        <a href="#services">Signature Valet</a>
+        <a href="#services">Prestige Valet</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 TKS Services. All rights reserved.</span>
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ===== WHATSAPP FLOAT ===== -->
+<a href="https://wa.me/447404758825" target="_blank" rel="noopener noreferrer" class="whatsapp-float" aria-label="Message us on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+
+<script>
+// === Theme Toggle ===
+(function(){
+  const toggles = document.querySelectorAll('[data-theme-toggle]');
+  const r = document.documentElement;
+  let d = matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+  r.setAttribute('data-theme', d);
+  
+  function updateIcons() {
+    const icon = d === 'dark' 
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    toggles.forEach(t => { t.innerHTML = icon; t.setAttribute('aria-label', 'Switch to '+(d==='dark'?'light':'dark')+' mode'); });
+  }
+  updateIcons();
+  
+  toggles.forEach(t => t.addEventListener('click', () => {
+    d = d === 'dark' ? 'light' : 'dark';
+    r.setAttribute('data-theme', d);
+    updateIcons();
+  }));
+})();
+
+
+// === Scroll reveal ===
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+
+// === Header scroll effect ===
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const header = document.getElementById('header');
+  if (window.scrollY > 50) {
+    header.classList.add('header--scrolled');
+  } else {
+    header.classList.remove('header--scrolled');
+  }
+});
+
+
+// === FAQ toggle ===
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+
+// === BOOKING SYSTEM ===
+const API = "__PORT_8000__".startsWith("__") ? "http://localhost:8000" : "__PORT_8000__";
+
+const SERVICES = [
+  { id: 'ceramic-wash', name: 'Ceramic Wash', price: 25, duration: '~30 min' },
+  { id: 'essential-valet', name: 'Essential Valet', price: 45, duration: '~1 hour' },
+  { id: 'signature-valet', name: 'Signature Valet', price: 90, duration: '~2 hours' },
+  { id: 'prestige-valet', name: 'Prestige Valet', price: 130, duration: '~3 hours' },
+];
+
+const ADDONS = [
+  { id: 'machine-polish', name: 'Machine Polish', desc: 'Removes swirls, restores shine', price: 100 },
+  { id: 'steam-clean', name: 'Steam Clean', desc: 'Deep-clean seats & surfaces', price: 30 },
+  { id: 'engine-bay', name: 'Engine Bay Detail', desc: 'Degrease, clean & protect', price: 30 },
+  { id: 'motorbike-valet', name: 'Motorbike Valet', desc: 'Specialist motorcycle clean', price: 30 },
+  { id: 'pet-hair', name: 'Pet Hair Removal', desc: 'Deep extraction from interiors', price: 15 },
+  { id: 'tar-removal', name: 'Tar Removal', desc: 'Specialist bodywork treatment', price: 10 },
+];
+
+let booking = {
+  service: null,
+  serviceName: null,
+  servicePrice: 0,
+  addons: [],  // array of addon ids
+  date: null,
+  dateDisplay: null,
+  time: null,
+  timeDisplay: null,
+  endTime: null,
+};
+
+function getTotal() {
+  let total = booking.servicePrice || 0;
+  booking.addons.forEach(id => {
+    const a = ADDONS.find(x => x.id === id);
+    if (a) total += a.price;
+  });
+  return total;
+}
+
+function renderCart() {
+  const cartEl = document.getElementById('cartTotal');
+  const itemsEl = document.getElementById('cartItems');
+  const totalEl = document.getElementById('cartTotalPrice');
+
+  if (!booking.service) {
+    cartEl.classList.add('hidden');
+    return;
+  }
+
+  cartEl.classList.remove('hidden');
+
+  let html = `<div class="cart-total__row">
+    <span>${booking.serviceName}</span>
+    <span>\u00a3${booking.servicePrice}</span>
+  </div>`;
+
+  booking.addons.forEach(id => {
+    const a = ADDONS.find(x => x.id === id);
+    if (a) {
+      html += `<div class="cart-total__row cart-total__row--addon">
+        <span>+ ${a.name}</span>
+        <span>\u00a3${a.price}</span>
+      </div>`;
+    }
+  });
+
+  itemsEl.innerHTML = html;
+  totalEl.textContent = `\u00a3${getTotal()}`;
+}
+
+// Populate service list
+function renderServiceList() {
+  const grid = document.getElementById('serviceList');
+  grid.innerHTML = SERVICES.map(s => `
+    <button class="service-select-option ${booking.service === s.id ? 'selected' : ''}" 
+            onclick="selectService('${s.id}', '${s.name}', ${s.price})">
+      <span class="service-select-option__name">${s.name}</span>
+      <span class="service-select-option__duration">${s.duration}</span>
+      <span class="service-select-option__price">\u00a3${s.price}</span>
+    </button>
+  `).join('');
+}
+
+function renderAddons() {
+  const grid = document.getElementById('addonList');
+  grid.innerHTML = ADDONS.map(a => {
+    const checked = booking.addons.includes(a.id);
+    return `<button class="addon-toggle ${checked ? 'addon-toggle--active' : ''}" onclick="toggleAddon('${a.id}')">
+      <div class="addon-toggle__check">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <div class="addon-toggle__info">
+        <span class="addon-toggle__name">${a.name}</span>
+        <span class="addon-toggle__desc">${a.desc}</span>
+      </div>
+      <span class="addon-toggle__price">+\u00a3${a.price}</span>
+    </button>`;
+  }).join('');
+}
+
+function toggleAddon(id) {
+  const idx = booking.addons.indexOf(id);
+  if (idx === -1) {
+    booking.addons.push(id);
+  } else {
+    booking.addons.splice(idx, 1);
+  }
+  renderAddons();
+  renderCart();
+}
+
+function selectService(id, name, price) {
+  booking.service = id;
+  booking.serviceName = name;
+  booking.servicePrice = price;
+  booking.date = null;
+  booking.time = null;
+  document.getElementById('step1Next').disabled = false;
+  document.getElementById('addonsSection').classList.remove('hidden');
+  renderServiceList();
+  renderAddons();
+  renderCart();
+}
+
+function startBooking(id, name, price) {
+  selectService(id, name, price);
+  document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+  goToStep(1);
+  renderServiceList();
+  renderAddons();
+  renderCart();
+}
+
+// Step navigation
+function goToStep(step) {
+  document.querySelectorAll('.booking-panel').forEach(p => p.classList.add('hidden'));
+  document.getElementById('bookingSuccessPanel').classList.add('hidden');
+  
+  const steps = document.querySelectorAll('.booking-step');
+  steps.forEach((s, i) => {
+    s.classList.remove('active', 'completed');
+    if (i + 1 < step) s.classList.add('completed');
+    if (i + 1 === step) s.classList.add('active');
+  });
+  
+  if (step === 1) {
+    document.getElementById('step1').classList.remove('hidden');
+    renderServiceList();
+    if (booking.service) {
+      document.getElementById('addonsSection').classList.remove('hidden');
+      renderAddons();
+      renderCart();
+    }
+  } else if (step === 2) {
+    document.getElementById('step2').classList.remove('hidden');
+    loadDates();
+  } else if (step === 3) {
+    document.getElementById('step3').classList.remove('hidden');
+    renderSummary();
+  }
+}
+
+// Load available dates
+async function loadDates() {
+  const grid = document.getElementById('dateGrid');
+  
+  try {
+    const res = await fetch(`${API}/api/available-dates?service=${booking.service}`);
+    const data = await res.json();
+    
+    grid.innerHTML = data.dates.map(d => `
+      <button class="date-btn ${booking.date === d.date ? 'selected' : ''}" 
+              onclick="selectDate('${d.date}', '${d.display}')">
+        <div class="date-btn__day">${d.day_name.substring(0,3)}</div>
+        <div class="date-btn__date">${d.short}</div>
+      </button>
+    `).join('');
+  } catch (e) {
+    // Fallback: generate dates client-side
+    const dates = [];
+    const today = new Date();
+    for (let i = 1; i <= 14; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() + i);
+      if (d.getDay() === 0) continue;
+      dates.push({
+        date: d.toISOString().split('T')[0],
+        day: d.toLocaleDateString('en-GB', { weekday: 'short' }),
+        display: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+      });
+    }
+    grid.innerHTML = dates.map(d => `
+      <button class="date-btn ${booking.date === d.date ? 'selected' : ''}" 
+              onclick="selectDate('${d.date}', '${d.display}')">
+        <div class="date-btn__day">${d.day}</div>
+        <div class="date-btn__date">${d.display}</div>
+      </button>
+    `).join('');
+  }
+}
+
+async function selectDate(date, display) {
+  booking.date = date;
+  booking.dateDisplay = display;
+  booking.time = null;
+  
+  // Update date buttons
+  document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('selected'));
+  event.target.closest('.date-btn').classList.add('selected');
+  
+  // Show time slots
+  const container = document.getElementById('timeSlotsContainer');
+  const content = document.getElementById('timeSlotsContent');
+  container.classList.remove('hidden');
+  content.innerHTML = '<div class="slots-loading"><div class="loading-spinner"></div><p style="margin-top:var(--space-3)">Loading available times...</p></div>';
+  document.getElementById('step2Next').disabled = true;
+  
+  try {
+    const res = await fetch(`${API}/api/available-slots?date=${date}&service=${booking.service}`);
+    const data = await res.json();
+    
+    if (data.slots.length === 0) {
+      content.innerHTML = '<p style="text-align:center;color:var(--color-text-muted);padding:var(--space-6)">No available slots on this date. Please try another day.</p>';
+    } else {
+      content.innerHTML = `<div class="time-slots">${data.slots.map(s => `
+        <button class="time-btn" onclick="selectTime('${s.time}', '${s.display}', '${s.end_time}')">${s.display}</button>
+      `).join('')}</div>`;
+    }
+  } catch (e) {
+    // Fallback: show all slots
+    const slots = [];
+    for (let h = 8; h < 18; h++) {
+      for (let m = 0; m < 60; m += 30) {
+        const time = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        const hr = h > 12 ? h - 12 : h;
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const display = `${hr}:${String(m).padStart(2,'0')} ${ampm}`;
+        slots.push({ time, display });
+      }
+    }
+    content.innerHTML = `<div class="time-slots">${slots.map(s => `
+      <button class="time-btn" onclick="selectTime('${s.time}', '${s.display}', '${s.time}')">${s.display}</button>
+    `).join('')}</div>`;
+  }
+}
+
+function selectTime(time, display, endTime) {
+  booking.time = time;
+  booking.timeDisplay = display;
+  booking.endTime = endTime;
+  document.getElementById('step2Next').disabled = false;
+  
+  document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+  event.target.classList.add('selected');
+}
+
+function renderSummary() {
+  const el = document.getElementById('bookingSummary');
+  let addonsHtml = '';
+  booking.addons.forEach(id => {
+    const a = ADDONS.find(x => x.id === id);
+    if (a) {
+      addonsHtml += `<div class="booking-summary__row booking-summary__row--addon">
+        <span>+ ${a.name}</span>
+        <strong>\u00a3${a.price}</strong>
+      </div>`;
+    }
+  });
+
+  el.innerHTML = `
+    <h3>Booking Summary</h3>
+    <div class="booking-summary__row">
+      <span>Service</span>
+      <strong>${booking.serviceName} — \u00a3${booking.servicePrice}</strong>
+    </div>
+    ${addonsHtml}
+    <div class="booking-summary__row">
+      <span>Date</span>
+      <strong>${booking.dateDisplay}</strong>
+    </div>
+    <div class="booking-summary__row">
+      <span>Time</span>
+      <strong>${booking.timeDisplay}</strong>
+    </div>
+    <div class="booking-summary__row booking-summary__row--total">
+      <span>Total</span>
+      <strong>\u00a3${getTotal()}</strong>
+    </div>
+  `;
+}
+
+async function submitBooking(e) {
+  e.preventDefault();
+  
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loading-spinner"></div> Booking...';
+  
+  const addonNames = booking.addons.map(id => {
+    const a = ADDONS.find(x => x.id === id);
+    return a ? a.name : id;
+  });
+  const payload = {
+    service: booking.service,
+    service_name: booking.serviceName,
+    service_price: booking.servicePrice,
+    addons: booking.addons,
+    addon_names: addonNames,
+    total_price: getTotal(),
+    date: booking.date,
+    time: booking.time,
+    end_time: booking.endTime || booking.time,
+    name: document.getElementById('customerName').value,
+    phone: document.getElementById('customerPhone').value,
+    email: document.getElementById('customerEmail').value,
+    vehicle: document.getElementById('customerVehicle').value,
+    notes: document.getElementById('customerNotes').value,
+  };
+  
+  try {
+    const res = await fetch(`${API}/api/book`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    
+    const data = await res.json();
+    
+    if (res.ok && data.success) {
+      // Show success
+      document.querySelectorAll('.booking-panel').forEach(p => p.classList.add('hidden'));
+      const successPanel = document.getElementById('bookingSuccessPanel');
+      successPanel.classList.remove('hidden');
+      document.getElementById('successMessage').textContent = 
+        `${booking.serviceName} booked for ${booking.dateDisplay} at ${booking.timeDisplay}. We'll see you there.`;
+    } else {
+      throw new Error(data.detail || 'Booking failed');
+    }
+  } catch (err) {
+    alert('Something went wrong. Please try again or contact us directly on 07404 758825.');
+    btn.disabled = false;
+    btn.textContent = 'Confirm Booking';
+  }
+}
+
+// Initialize
+renderServiceList();
+goToStep(1);
+
+
+// === SUBSCRIPTION ONBOARDING ===
+let subscription = {
+  vehicleMake: '',
+  vehicleReg: '',
+  vehicleColour: '',
+  condition: '',
+  preferredDay: '',
+  preferredTime: '',
+  startDate: '',
+  name: '',
+  phone: '',
+  email: '',
+  postcode: '',
+  address: '',
+  notes: '',
+};
+
+function openSubscriptionFlow() {
+  document.getElementById('subModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  // Set min date on the date picker to tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('subStartDate').min = tomorrow.toISOString().split('T')[0];
+  goSubStep(1);
+}
+
+function closeSubscriptionFlow() {
+  document.getElementById('subModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close on overlay click
+document.getElementById('subModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSubscriptionFlow();
+});
+
+function goSubStep(step) {
+  document.querySelectorAll('.sub-panel').forEach(p => p.classList.add('hidden'));
+  
+  const steps = document.querySelectorAll('.sub-step');
+  steps.forEach((s, i) => {
+    s.classList.remove('active', 'completed');
+    if (i + 1 < step) s.classList.add('completed');
+    if (i + 1 === step) s.classList.add('active');
+  });
+  
+  const panel = document.getElementById('subStep' + step);
+  if (panel) panel.classList.remove('hidden');
+  
+  if (step === 4) renderSubSummary();
+}
+
+function selectCondition(btn, value) {
+  subscription.condition = value;
+  document.querySelectorAll('.sub-condition-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function selectSubDay(btn, day) {
+  subscription.preferredDay = day;
+  document.querySelectorAll('.sub-day-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function selectSubTime(btn, time) {
+  subscription.preferredTime = time;
+  document.querySelectorAll('.sub-time-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function renderSubSummary() {
+  // Collect form values
+  subscription.vehicleMake = document.getElementById('subVehicleMake').value;
+  subscription.vehicleReg = document.getElementById('subVehicleReg').value;
+  subscription.vehicleColour = document.getElementById('subVehicleColour').value;
+  subscription.startDate = document.getElementById('subStartDate').value;
+  subscription.name = document.getElementById('subName').value;
+  subscription.phone = document.getElementById('subPhone').value;
+  subscription.email = document.getElementById('subEmail').value;
+  subscription.postcode = document.getElementById('subPostcode').value;
+  subscription.address = document.getElementById('subAddress').value;
+  subscription.notes = document.getElementById('subNotes').value;
+  
+  const startDateDisplay = subscription.startDate 
+    ? new Date(subscription.startDate).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    : 'Not selected';
+
+  document.getElementById('subSummary').innerHTML = `
+    <div class="sub-summary__section">
+      <h4>Vehicle</h4>
+      <div class="sub-summary__row"><span>Make & Model</span><strong>${subscription.vehicleMake || '—'}</strong></div>
+      ${subscription.vehicleReg ? `<div class="sub-summary__row"><span>Registration</span><strong>${subscription.vehicleReg}</strong></div>` : ''}
+      ${subscription.vehicleColour ? `<div class="sub-summary__row"><span>Colour</span><strong>${subscription.vehicleColour}</strong></div>` : ''}
+      ${subscription.condition ? `<div class="sub-summary__row"><span>Condition</span><strong>${subscription.condition}</strong></div>` : ''}
+    </div>
+    <div class="sub-summary__section">
+      <h4>Schedule</h4>
+      <div class="sub-summary__row"><span>First Deep Clean</span><strong>${startDateDisplay}</strong></div>
+      ${subscription.preferredDay ? `<div class="sub-summary__row"><span>Monthly Day</span><strong>${subscription.preferredDay}s</strong></div>` : ''}
+      ${subscription.preferredTime ? `<div class="sub-summary__row"><span>Time Window</span><strong>${subscription.preferredTime}</strong></div>` : ''}
+    </div>
+    <div class="sub-summary__section">
+      <h4>Contact</h4>
+      <div class="sub-summary__row"><span>Name</span><strong>${subscription.name || '—'}</strong></div>
+      <div class="sub-summary__row"><span>Phone</span><strong>${subscription.phone || '—'}</strong></div>
+      <div class="sub-summary__row"><span>Email</span><strong>${subscription.email || '—'}</strong></div>
+      <div class="sub-summary__row"><span>Postcode</span><strong>${subscription.postcode || '—'}</strong></div>
+      ${subscription.address ? `<div class="sub-summary__row"><span>Address</span><strong>${subscription.address}</strong></div>` : ''}
+    </div>
+  `;
+}
+
+async function submitSubscription() {
+  const btn = document.getElementById('subConfirmBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loading-spinner"></div> Confirming...';
+  
+  // Collect all subscription data
+  renderSubSummary();
+  
+  const payload = {
+    type: 'subscription',
+    service: 'monthly-subscription',
+    service_name: 'Monthly Valet Subscription',
+    service_price: 99,
+    total_price: 99,
+    addons: [],
+    addon_names: [],
+    date: subscription.startDate || new Date(Date.now() + 86400000).toISOString().split('T')[0],
+    time: '09:00',
+    end_time: '12:00',
+    name: subscription.name,
+    phone: subscription.phone,
+    email: subscription.email,
+    vehicle: subscription.vehicleMake,
+    notes: [
+      'MONTHLY SUBSCRIPTION SIGNUP',
+      `Vehicle: ${subscription.vehicleMake}`,
+      subscription.vehicleReg ? `Reg: ${subscription.vehicleReg}` : '',
+      subscription.vehicleColour ? `Colour: ${subscription.vehicleColour}` : '',
+      subscription.condition ? `Condition: ${subscription.condition}` : '',
+      subscription.preferredDay ? `Preferred monthly day: ${subscription.preferredDay}` : '',
+      subscription.preferredTime ? `Preferred time: ${subscription.preferredTime}` : '',
+      subscription.postcode ? `Postcode: ${subscription.postcode}` : '',
+      subscription.address ? `Address: ${subscription.address}` : '',
+      subscription.notes ? `Notes: ${subscription.notes}` : '',
+    ].filter(Boolean).join('\n'),
+  };
+
+  try {
+    const res = await fetch(`${API}/api/book`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      document.querySelectorAll('.sub-panel').forEach(p => p.classList.add('hidden'));
+      document.querySelector('.sub-modal__progress').style.display = 'none';
+      document.getElementById('subSuccess').classList.remove('hidden');
+      document.getElementById('subSuccessMsg').textContent = 
+        `Welcome to the monthly plan, ${subscription.name.split(' ')[0]}. We'll be in touch to confirm your initial deep clean${subscription.startDate ? ' on ' + new Date(subscription.startDate).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) : ''}.`;
+    } else {
+      throw new Error(data.detail || 'Submission failed');
+    }
+  } catch (err) {
+    alert('Something went wrong. Please try again or contact us directly on 07404 758825.');
+    btn.disabled = false;
+    btn.textContent = 'Confirm Subscription';
+  }
+}
+
+</script>
+
+</body>
+</html>
