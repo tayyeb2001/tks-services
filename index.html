@@ -35,7 +35,7 @@
 <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js" defer></script>
 
 <link rel="stylesheet" href="./base.css">
-<link rel="stylesheet" href="./style.css?v=5">
+<link rel="stylesheet" href="./style.css?v=6">
 </head>
 <body>
 
@@ -584,6 +584,16 @@
           <!-- populated by JS -->
         </div>
 
+        <div class="sub-upsell">
+          <div class="sub-upsell__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+          </div>
+          <div class="sub-upsell__content">
+            <span class="sub-upsell__text">Want regular upkeep? Try our <strong>Monthly Subscription</strong> — just £40/month after an initial deep clean.</span>
+            <button class="sub-upsell__link" onclick="openSubscriptionFlow()">Get Started →</button>
+          </div>
+        </div>
+
         <div id="addonsSection" class="addons-booking-section hidden">
           <h3 class="booking-panel__subtitle">Add Extras</h3>
           <p class="addons-hint">Optional — enhance your valet with any of these.</p>
@@ -852,6 +862,7 @@
       </div>
       <div class="footer__col">
         <h4>Services</h4>
+        <a href="javascript:void(0)" onclick="openSubscriptionFlow()">Monthly Subscription</a>
         <a href="#services">Ceramic Wash</a>
         <a href="#services">Essential Valet</a>
         <a href="#services">Signature Valet</a>

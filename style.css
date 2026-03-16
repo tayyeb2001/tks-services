@@ -1412,6 +1412,18 @@ section {
 
 .footer__contact-item a {
   display: inline;
+  color: var(--color-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer__contact-item a:hover {
+  color: #fff;
+}
+
+.footer__contact-item svg {
+  color: var(--color-accent);
+  flex-shrink: 0;
 }
 
 
@@ -2262,4 +2274,62 @@ section {
   .sub-condition-options {
     grid-template-columns: 1fr;
   }
+}
+
+
+/* === SUBSCRIPTION UPSELL IN BOOKING FLOW === */
+.sub-upsell {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: var(--space-4);
+  margin-top: var(--space-5);
+  background: rgba(200,160,78,.06);
+  border: 1px solid rgba(200,160,78,.2);
+  border-radius: 14px;
+}
+
+.sub-upsell__icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(200,160,78,.12);
+  border-radius: 10px;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.sub-upsell__content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sub-upsell__text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.sub-upsell__text strong {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.sub-upsell__link {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: opacity .2s;
+}
+
+.sub-upsell__link:hover {
+  opacity: .75;
 }
