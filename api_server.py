@@ -1,16 +1,34 @@
 #!/usr/bin/env python3
-"""TKS Services Booking API — connects to Google Calendar for availability and booking."""
+"""TKS Services Booking API — Google Calendar availability + Stripe-gated bookings."""
 
 import asyncio
 import json
 import os
 from datetime import datetime, timedelta
+
+import stripe
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+load_dotenv()
+
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "gbp")
+PUBLIC_SITE_URL = os.getenv("PUBLIC_SITE_URL", "http://localhost:8000").rstrip("/")
+
+if STRIPE_SECRET_KEY:
+    stripe.api_key = STRIPE_SECRET_KEY
+
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+# Pending bookings keyed by Stripe Checkout session id. Cleared once the booking
+# is written to the calendar. In-memory is fine for a single-process deployment;
+# move to a real store (Redis/DB) if you ever run more than one worker.
+PENDING_BOOKINGS: dict[str, "BookingRequest"] = {}
+CONFIRMED_BOOKINGS: dict[str, dict] = {}
 
 # Service durations in minutes
 SERVICE_DURATIONS = {
@@ -191,19 +209,30 @@ class BookingRequest(BaseModel):
 
 @app.post("/api/book")
 async def create_booking(booking: BookingRequest):
-    """Create a booking and add to Google Calendar."""
-    duration = SERVICE_DURATIONS.get(booking.service, 60)
-    
+    """Write a booking straight to the calendar without taking payment.
+    Used by the monthly-subscription signup flow, which arranges payment separately.
+    The one-off booking flow goes through /api/create-checkout-session instead."""
+    try:
+        return await write_booking_to_calendar(booking)
+    except Exception as e:
+        print(f"Booking error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create booking. Please try again or call us directly.")
+
+
+async def write_booking_to_calendar(booking: "BookingRequest", payment_ref: str = "") -> dict:
+    """Write a paid booking to Google Calendar and return the API response payload."""
     start_dt = f"{booking.date}T{booking.time}:00+00:00"
     end_dt = f"{booking.date}T{booking.end_time}:00+00:00"
-    
+
     addons_text = ""
     if booking.addon_names:
         addons_text = "\nAdd-ons: " + ", ".join(booking.addon_names)
-    
+
+    payment_line = f"\nStripe payment: {payment_ref}" if payment_ref else ""
+
     description = f"""TKS Services Booking
 Service: {booking.service_name} (\u00a3{booking.service_price}){addons_text}
-Total: \u00a3{booking.total_price}
+Total: \u00a3{booking.total_price}{payment_line}
 Customer: {booking.name}
 Phone: {booking.phone}
 Email: {booking.email}
@@ -211,37 +240,155 @@ Vehicle: {booking.vehicle}
 Notes: {booking.notes}
 ---
 Booked via TKS Services website"""
-    
-    try:
-        result = await call_tool("gcal", "update_calendar", {
-            "create_actions": [{
-                "action": "create",
-                "title": f"TKS Valet - {booking.service_name} - {booking.name}",
-                "description": description,
-                "start_date_time": start_dt,
-                "end_date_time": end_dt,
-                "location": "Mobile - Customer Location",
-                "attendees": [],
-                "meeting_provider": None,
-            }],
-            "delete_actions": [],
-            "update_actions": [],
-            "user_prompt": None,
+
+    await call_tool("gcal", "update_calendar", {
+        "create_actions": [{
+            "action": "create",
+            "title": f"TKS Valet - {booking.service_name} - {booking.name}",
+            "description": description,
+            "start_date_time": start_dt,
+            "end_date_time": end_dt,
+            "location": "Mobile - Customer Location",
+            "attendees": [],
+            "meeting_provider": None,
+        }],
+        "delete_actions": [],
+        "update_actions": [],
+        "user_prompt": None,
+    })
+
+    return {
+        "success": True,
+        "message": f"Booking confirmed for {booking.service_name} on {booking.date} at {booking.time}",
+        "booking": {
+            "service": booking.service_name,
+            "date": booking.date,
+            "time": booking.time,
+            "name": booking.name,
+        },
+    }
+
+
+def _require_stripe() -> None:
+    if not stripe.api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="Payments are not configured. Set STRIPE_SECRET_KEY in the server environment.",
+        )
+
+
+def _build_line_items(booking: "BookingRequest") -> list[dict]:
+    """Build Stripe line items from the booking. Total comes from the same
+    breakdown the customer saw on the page: service + each add-on at its own price."""
+    items: list[dict] = []
+    items.append({
+        "price_data": {
+            "currency": STRIPE_CURRENCY,
+            "product_data": {"name": booking.service_name},
+            "unit_amount": int(booking.service_price) * 100,
+        },
+        "quantity": 1,
+    })
+
+    addon_total = max(int(booking.total_price) - int(booking.service_price), 0)
+    if addon_total > 0:
+        label = ", ".join(booking.addon_names) if booking.addon_names else "Add-ons"
+        items.append({
+            "price_data": {
+                "currency": STRIPE_CURRENCY,
+                "product_data": {"name": f"Add-ons: {label}"},
+                "unit_amount": addon_total * 100,
+            },
+            "quantity": 1,
         })
-        
-        return {
-            "success": True,
-            "message": f"Booking confirmed for {booking.service_name} on {booking.date} at {booking.time}",
-            "booking": {
-                "service": booking.service_name,
+
+    return items
+
+
+class CheckoutSessionResponse(BaseModel):
+    checkout_url: str
+    session_id: str
+
+
+@app.post("/api/create-checkout-session", response_model=CheckoutSessionResponse)
+async def create_checkout_session(booking: BookingRequest):
+    """Create a Stripe Checkout Session for the booking and stash it server-side
+    until Stripe confirms payment."""
+    _require_stripe()
+
+    if booking.total_price <= 0:
+        raise HTTPException(status_code=400, detail="Booking total must be greater than zero.")
+
+    success_url = f"{PUBLIC_SITE_URL}/?stripe_session_id={{CHECKOUT_SESSION_ID}}#booking"
+    cancel_url = f"{PUBLIC_SITE_URL}/?stripe_cancelled=1#booking"
+
+    try:
+        session = await asyncio.to_thread(
+            stripe.checkout.Session.create,
+            mode="payment",
+            payment_method_types=["card"],
+            line_items=_build_line_items(booking),
+            customer_email=booking.email or None,
+            success_url=success_url,
+            cancel_url=cancel_url,
+            metadata={
+                "service": booking.service,
                 "date": booking.date,
                 "time": booking.time,
-                "name": booking.name,
-            }
-        }
+                "customer_name": booking.name,
+                "customer_phone": booking.phone,
+            },
+        )
+    except stripe.error.StripeError as e:
+        print(f"Stripe error creating session: {e}")
+        raise HTTPException(status_code=502, detail="Could not start checkout. Please try again.")
+
+    PENDING_BOOKINGS[session.id] = booking
+    return CheckoutSessionResponse(checkout_url=session.url, session_id=session.id)
+
+
+class ConfirmRequest(BaseModel):
+    session_id: str
+
+
+@app.post("/api/confirm-booking")
+async def confirm_booking(req: ConfirmRequest):
+    """Verify the Stripe Checkout Session was paid, then write the calendar event.
+    Idempotent: replays return the cached confirmation."""
+    _require_stripe()
+
+    if req.session_id in CONFIRMED_BOOKINGS:
+        return CONFIRMED_BOOKINGS[req.session_id]
+
+    try:
+        session = await asyncio.to_thread(stripe.checkout.Session.retrieve, req.session_id)
+    except stripe.error.StripeError as e:
+        print(f"Stripe error retrieving session: {e}")
+        raise HTTPException(status_code=502, detail="Could not verify payment. Please contact us.")
+
+    if session.payment_status != "paid":
+        raise HTTPException(status_code=402, detail="Payment not completed.")
+
+    booking = PENDING_BOOKINGS.get(req.session_id)
+    if booking is None:
+        # Server restarted between checkout and return; rebuild minimum fields from metadata.
+        raise HTTPException(
+            status_code=410,
+            detail="Booking session expired on our side. Your payment is safe \u2014 please contact us to confirm the slot.",
+        )
+
+    try:
+        result = await write_booking_to_calendar(booking, payment_ref=session.payment_intent or session.id)
     except Exception as e:
-        print(f"Booking error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to create booking. Please try again or call us directly.")
+        print(f"Calendar write failed after payment: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Payment received but we couldn't add the calendar entry. We'll contact you shortly.",
+        )
+
+    CONFIRMED_BOOKINGS[req.session_id] = result
+    PENDING_BOOKINGS.pop(req.session_id, None)
+    return result
 
 
 if __name__ == "__main__":

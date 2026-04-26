@@ -39,6 +39,14 @@
 </head>
 <body>
 
+<!-- ===== MAINTENANCE BANNER ===== -->
+<div role="alert" style="background:var(--color-primary);color:var(--color-text-inverse);padding:12px 20px;text-align:center;font-weight:500;font-size:0.95rem;line-height:1.4;border-bottom:2px solid var(--color-accent);">
+  <strong style="color:var(--color-accent)">Website under maintenance.</strong>
+  Online bookings are temporarily unavailable — please call or text
+  <a href="tel:+447404758825" style="color:var(--color-accent);text-decoration:underline;font-weight:600;white-space:nowrap">07404 758825</a>
+  to book.
+</div>
+
 <!-- ===== HEADER ===== -->
 <header class="header" id="header">
   <div class="container header__inner">
@@ -674,7 +682,7 @@
 
           <div class="booking-nav">
             <button type="button" class="btn btn--outline" onclick="goToStep(2)">Back</button>
-            <button type="submit" class="btn btn--primary btn--lg" id="submitBtn">Confirm Booking</button>
+            <button type="submit" class="btn btn--primary btn--lg" id="submitBtn">Pay & Confirm Booking</button>
           </div>
         </form>
       </div>
@@ -1234,11 +1242,11 @@ function renderSummary() {
 
 async function submitBooking(e) {
   e.preventDefault();
-  
+
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.innerHTML = '<div class="loading-spinner"></div> Booking...';
-  
+  btn.innerHTML = '<div class="loading-spinner"></div> Redirecting to payment...';
+
   const addonNames = booking.addons.map(id => {
     const a = ADDONS.find(x => x.id === id);
     return a ? a.name : id;
@@ -1259,36 +1267,93 @@ async function submitBooking(e) {
     vehicle: document.getElementById('customerVehicle').value,
     notes: document.getElementById('customerNotes').value,
   };
-  
+
+  // Stash the booking summary so we can show a nice confirmation when Stripe redirects back.
   try {
-    const res = await fetch(`${API}/api/book`, {
+    sessionStorage.setItem('tks_pending_booking', JSON.stringify({
+      serviceName: booking.serviceName,
+      dateDisplay: booking.dateDisplay,
+      timeDisplay: booking.timeDisplay,
+    }));
+  } catch (_) { /* sessionStorage may be disabled; not fatal */ }
+
+  try {
+    const res = await fetch(`${API}/api/create-checkout-session`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    
+
     const data = await res.json();
-    
-    if (res.ok && data.success) {
-      // Show success
-      document.querySelectorAll('.booking-panel').forEach(p => p.classList.add('hidden'));
-      const successPanel = document.getElementById('bookingSuccessPanel');
-      successPanel.classList.remove('hidden');
-      document.getElementById('successMessage').textContent = 
-        `${booking.serviceName} booked for ${booking.dateDisplay} at ${booking.timeDisplay}. We'll see you there.`;
-    } else {
-      throw new Error(data.detail || 'Booking failed');
+
+    if (res.ok && data.checkout_url) {
+      window.location.href = data.checkout_url;
+      return;
+    }
+    throw new Error(data.detail || 'Could not start checkout');
+  } catch (err) {
+    alert('Something went wrong starting checkout. Please try again or contact us directly on 07404 758825.');
+    btn.disabled = false;
+    btn.textContent = 'Pay & Confirm Booking';
+  }
+}
+
+async function confirmStripeReturnIfNeeded() {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('stripe_session_id');
+  const cancelled = params.get('stripe_cancelled');
+
+  // Always strip Stripe params from the URL so a refresh doesn't re-trigger anything.
+  if (sessionId || cancelled) {
+    const cleanUrl = window.location.pathname + window.location.hash;
+    window.history.replaceState({}, '', cleanUrl);
+  }
+
+  if (cancelled) {
+    alert('Payment was cancelled. Your slot has not been booked — feel free to try again.');
+    return;
+  }
+  if (!sessionId) return;
+
+  // Show the success panel in a "verifying" state while we confirm with the server.
+  document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('.booking-panel').forEach(p => p.classList.add('hidden'));
+  const successPanel = document.getElementById('bookingSuccessPanel');
+  successPanel.classList.remove('hidden');
+  const heading = successPanel.querySelector('h3');
+  const msg = document.getElementById('successMessage');
+  if (heading) heading.textContent = 'Confirming your booking...';
+  if (msg) msg.textContent = 'Verifying payment with Stripe.';
+
+  try {
+    const res = await fetch(`${API}/api/confirm-booking`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.detail || 'Confirmation failed');
+
+    let pending = {};
+    try { pending = JSON.parse(sessionStorage.getItem('tks_pending_booking') || '{}'); } catch (_) {}
+    sessionStorage.removeItem('tks_pending_booking');
+
+    if (heading) heading.textContent = 'Booking Confirmed';
+    if (msg) {
+      msg.textContent = pending.serviceName
+        ? `${pending.serviceName} booked for ${pending.dateDisplay} at ${pending.timeDisplay}. We'll see you there.`
+        : (data.message || "Your valet has been booked. We'll see you soon.");
     }
   } catch (err) {
-    alert('Something went wrong. Please try again or contact us directly on 07404 758825.');
-    btn.disabled = false;
-    btn.textContent = 'Confirm Booking';
+    if (heading) heading.textContent = 'Payment received';
+    if (msg) msg.textContent = "We received your payment but couldn't finalise the calendar entry. Please WhatsApp us on 07404 758825 and we'll sort it out right away.";
   }
 }
 
 // Initialize
 renderServiceList();
 goToStep(1);
+confirmStripeReturnIfNeeded();
 
 
 // === SUBSCRIPTION ONBOARDING ===
