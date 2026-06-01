@@ -23,8 +23,16 @@ from pydantic import BaseModel, Field
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = Path(os.getenv("TKS_DATA_DIR", BASE_DIR / "data"))
+DEFAULT_DATA_DIR = Path("/tmp/tksservices") if os.getenv("VERCEL") else BASE_DIR / "data"
+DATA_DIR = Path(os.getenv("TKS_DATA_DIR", DEFAULT_DATA_DIR))
 DB_PATH = Path(os.getenv("TKS_DB_PATH", DATA_DIR / "bookings.sqlite3"))
+POSTGRES_DSN = (
+    os.getenv("DATABASE_URL")
+    or os.getenv("POSTGRES_URL")
+    or os.getenv("SUPABASE_DB_URL")
+    or ""
+)
+DB_BACKEND = "postgres" if POSTGRES_DSN else "sqlite"
 LOCAL_TZ_NAME = os.getenv("TKS_TIMEZONE", "Europe/London")
 LOCAL_TZ = ZoneInfo(LOCAL_TZ_NAME)
 ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "change-me")
@@ -126,17 +134,68 @@ def today_local() -> date_cls:
 
 
 @contextmanager
-def db() -> Iterable[sqlite3.Connection]:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA foreign_keys = ON")
+def db() -> Iterable[Any]:
+    if DB_BACKEND == "postgres":
+        try:
+            import psycopg
+            from psycopg.rows import dict_row
+        except ImportError as exc:
+            raise RuntimeError("Postgres support requires psycopg[binary]. Run pip install -r requirements.txt.") from exc
+
+        dsn = postgres_dsn()
+        conn = psycopg.connect(dsn, row_factory=dict_row, prepare_threshold=None)
+        wrapped = DatabaseConnection(conn, "postgres")
+    else:
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        wrapped = DatabaseConnection(conn, "sqlite")
+        wrapped.execute("PRAGMA foreign_keys = ON")
+
     try:
-        yield conn
-        conn.commit()
+        yield wrapped
+        wrapped.commit()
     finally:
-        conn.close()
+        wrapped.close()
+
+
+def postgres_dsn() -> str:
+    dsn = POSTGRES_DSN
+    if not dsn:
+        return dsn
+    lowered = dsn.lower()
+    is_local = "localhost" in lowered or "127.0.0.1" in lowered
+    if "sslmode=" not in lowered and not is_local:
+        separator = "&" if "?" in dsn else "?"
+        dsn = f"{dsn}{separator}sslmode=require"
+    return dsn
+
+
+class DatabaseConnection:
+    def __init__(self, conn: Any, backend: str) -> None:
+        self.conn = conn
+        self.backend = backend
+
+    def execute(self, sql: str, params: Tuple[Any, ...] = ()) -> Any:
+        if self.backend == "postgres":
+            sql = sql.replace("?", "%s")
+        return self.conn.execute(sql, params)
+
+    def executescript(self, script: str) -> None:
+        if self.backend == "sqlite":
+            self.conn.executescript(script)
+            return
+        for statement in script.split(";"):
+            statement = statement.strip()
+            if statement:
+                self.execute(statement)
+
+    def commit(self) -> None:
+        self.conn.commit()
+
+    def close(self) -> None:
+        self.conn.close()
 
 
 def init_db() -> None:
@@ -795,7 +854,7 @@ async def head_admin() -> Response:
 
 @app.get("/api/health")
 async def health() -> Dict[str, str]:
-    return {"status": "ok", "timezone": LOCAL_TZ_NAME}
+    return {"status": "ok", "timezone": LOCAL_TZ_NAME, "database": DB_BACKEND}
 
 
 @app.get("/api/available-dates")
@@ -934,6 +993,7 @@ async def admin_state(request: Request) -> Dict[str, Any]:
         "working_hours": working_hours,
         "settings": {
             "timezone": LOCAL_TZ_NAME,
+            "database": DB_BACKEND,
             "business_email": BUSINESS_EMAIL,
             "calendar_feed_path": f"/calendar/tks-services.ics?token={CALENDAR_TOKEN}",
             "default_admin_token": ADMIN_TOKEN == "change-me",

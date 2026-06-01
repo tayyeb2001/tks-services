@@ -25,12 +25,22 @@ Open:
 
 The booking database is stored at `data/bookings.sqlite3` by default. Override it with `TKS_DATA_DIR` or `TKS_DB_PATH`.
 
+For production, set a Postgres connection string with one of:
+
+- `DATABASE_URL`
+- `POSTGRES_URL`
+- `SUPABASE_DB_URL`
+
+When a Postgres URL is present, the app creates and uses the production Postgres tables automatically. SQLite is only the local fallback.
+
 ## Admin and calendar sync
 
 Set these environment variables before deployment:
 
 - `ADMIN_TOKEN`: password/token used by `/admin`.
 - `CALENDAR_TOKEN`: private token for the iPhone calendar feed.
+- `DATABASE_URL` or `POSTGRES_URL`: Vercel Marketplace Postgres/Neon connection string.
+- `SUPABASE_DB_URL`: Supabase Postgres connection string if using Supabase instead.
 - `BUSINESS_EMAIL`: defaults to `Tksservices1@outlook.com`.
 - `TKS_TIMEZONE`: defaults to `Europe/London`.
 
@@ -38,4 +48,6 @@ In `/admin`, copy the calendar feed URL. On iPhone, go to Settings, Calendar, Ac
 
 ## Vercel
 
-Vercel detects the FastAPI app through `app.py`, which imports the main `api_server.app` instance. Add `ADMIN_TOKEN`, `CALENDAR_TOKEN`, and `BUSINESS_EMAIL` in the Vercel project environment variables before using the admin dashboard.
+Vercel detects the FastAPI app through `app.py`, which imports the main `api_server.app` instance. Add `ADMIN_TOKEN`, `CALENDAR_TOKEN`, `BUSINESS_EMAIL`, and a Postgres connection string in the Vercel project environment variables before using the admin dashboard.
+
+For Supabase, use the transaction pooler connection string for serverless deployments. The app disables prepared statements for Postgres connections so it can work with pooled Supabase connections.
