@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TKS Booking Admin</title>
+  <style>
+    :root {
+      --bg: #101114;
+      --panel: #181a1f;
+      --panel-2: #20232a;
+      --line: #30343d;
+      --text: #f4f1e8;
+      --muted: #aaa59a;
+      --gold: #d7a64f;
+      --gold-2: #f0c36a;
+      --danger: #f46f6f;
+      --ok: #72d28b;
+      --shadow: 0 16px 60px rgba(0, 0, 0, 0.35);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    button, input, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      letter-spacing: 0;
+    }
+
+    .subtle {
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .login {
+      display: grid;
+      grid-template-columns: minmax(180px, 280px) auto;
+      gap: 10px;
+      min-width: min(100%, 430px);
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      color: var(--text);
+      background: #111216;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    .input:focus, .textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(215, 166, 79, 0.14);
+    }
+
+    .btn {
+      border-radius: 8px;
+      padding: 11px 14px;
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      min-height: 42px;
+    }
+
+    .btn:hover {
+      border-color: var(--gold);
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #17120a;
+      font-weight: 800;
+    }
+
+    .btn-danger {
+      color: #260909;
+      background: var(--danger);
+      border-color: var(--danger);
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head h2 {
+      font-size: 1.05rem;
+      letter-spacing: 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #111216;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .pill-ok {
+      color: var(--ok);
+      border-color: rgba(114, 210, 139, 0.3);
+    }
+
+    .pill-warn {
+      color: var(--gold-2);
+      border-color: rgba(240, 195, 106, 0.3);
+    }
+
+    .pill-danger {
+      color: var(--danger);
+      border-color: rgba(244, 111, 111, 0.3);
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      padding: 13px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #121419;
+    }
+
+    .item-title {
+      font-weight: 800;
+    }
+
+    .item-meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 4px;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-grid .wide {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .hours {
+      display: grid;
+      gap: 8px;
+    }
+
+    .hour-row {
+      display: grid;
+      grid-template-columns: 98px 72px 1fr 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #121419;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+    .feed {
+      display: grid;
+      gap: 10px;
+    }
+
+    .status {
+      min-height: 24px;
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .topbar, .grid {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .login {
+        grid-template-columns: 1fr;
+      }
+
+      .item {
+        grid-template-columns: 1fr;
+      }
+
+      .item-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .form-grid, .hour-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <h1>TKS Booking Admin</h1>
+        <p class="subtle">Manage bookings, subscriptions, working hours, blocked slots, and iPhone calendar sync.</p>
+      </div>
+      <div>
+        <div class="login">
+          <input id="tokenInput" class="input" type="password" autocomplete="current-password" placeholder="Admin token">
+          <button class="btn btn-primary" type="button" onclick="saveToken()">Load Admin</button>
+        </div>
+        <p id="status" class="status"></p>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Upcoming Bookings</h2>
+            <button class="btn" type="button" onclick="loadState()">Refresh</button>
+          </div>
+          <div id="bookingsList" class="list">
+            <div class="empty">Enter the admin token to load bookings.</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Subscriptions</h2>
+            <span id="subscriptionCount" class="pill">0 active</span>
+          </div>
+          <div id="subscriptionsList" class="list">
+            <div class="empty">No subscriptions loaded.</div>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>iPhone Calendar Feed</h2>
+            <span id="timezonePill" class="pill">Europe/London</span>
+          </div>
+          <div class="feed">
+            <input id="feedUrl" class="input" readonly placeholder="Load admin to generate feed URL">
+            <button class="btn btn-primary" type="button" onclick="copyFeed()">Copy Calendar Link</button>
+            <p class="subtle">On iPhone: Settings, Calendar, Accounts, Add Account, Other, Add Subscribed Calendar, then paste this URL.</p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Block Out Slots</h2>
+          </div>
+          <form id="blockoutForm" class="form-grid">
+            <label class="wide">Date
+              <input id="blockDate" class="input" type="date" required>
+            </label>
+            <label>Start
+              <input id="blockStart" class="input" type="time" value="09:00" required>
+            </label>
+            <label>End
+              <input id="blockEnd" class="input" type="time" value="12:00" required>
+            </label>
+            <label class="wide">Reason
+              <input id="blockReason" class="input" type="text" value="Unavailable">
+            </label>
+            <button class="btn btn-primary wide" type="submit">Add Block</button>
+          </form>
+          <div id="blockoutsList" class="list" style="margin-top:14px">
+            <div class="empty">No blockouts loaded.</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Working Hours</h2>
+          </div>
+          <div id="hoursForm" class="hours"></div>
+          <button class="btn btn-primary" type="button" style="margin-top:12px;width:100%" onclick="saveHours()">Save Hours</button>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const tokenInput = document.getElementById('tokenInput');
+    const statusEl = document.getElementById('status');
+    const state = { bookings: [], subscriptions: [], blockouts: [], working_hours: [], settings: {} };
+    const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    tokenInput.value = localStorage.getItem('tksAdminToken') || '';
+    document.getElementById('blockDate').min = new Date().toISOString().split('T')[0];
+
+    function token() {
+      return tokenInput.value.trim();
+    }
+
+    function setStatus(message, tone) {
+      statusEl.textContent = message || '';
+      statusEl.style.color = tone === 'error' ? 'var(--danger)' : tone === 'ok' ? 'var(--ok)' : 'var(--muted)';
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;',
+      }[char]));
+    }
+
+    async function api(path, options = {}) {
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Admin-Token': token(),
+        ...(options.headers || {}),
+      };
+      const res = await fetch(path, { ...options, headers });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.detail || 'Request failed');
+      }
+      return data;
+    }
+
+    async function saveToken() {
+      localStorage.setItem('tksAdminToken', token());
+      await loadState();
+    }
+
+    async function loadState() {
+      if (!token()) {
+        setStatus('Enter the admin token.', 'error');
+        return;
+      }
+      setStatus('Loading...');
+      try {
+        const data = await api('/api/admin/state');
+        Object.assign(state, data);
+        renderAll();
+        setStatus('Admin loaded.', 'ok');
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    }
+
+    function statusPill(status) {
+      const className = status === 'confirmed' || status === 'active'
+        ? 'pill pill-ok'
+        : status === 'cancelled'
+          ? 'pill pill-danger'
+          : 'pill pill-warn';
+      return `<span class="${className}">${escapeHtml(status)}</span>`;
+    }
+
+    function renderAll() {
+      renderBookings();
+      renderSubscriptions();
+      renderBlockouts();
+      renderHours();
+      renderSettings();
+    }
+
+    function renderSettings() {
+      document.getElementById('timezonePill').textContent = state.settings.timezone || 'Europe/London';
+      const feedPath = state.settings.calendar_feed_path || '';
+      document.getElementById('feedUrl').value = feedPath ? `${window.location.origin}${feedPath}` : '';
+      if (state.settings.default_admin_token) {
+        setStatus('Using default admin token. Set ADMIN_TOKEN before deployment.', 'error');
+      }
+    }
+
+    function renderBookings() {
+      const el = document.getElementById('bookingsList');
+      if (!state.bookings.length) {
+        el.innerHTML = '<div class="empty">No upcoming bookings.</div>';
+        return;
+      }
+      el.innerHTML = state.bookings.map(booking => `
+        <article class="item">
+          <div>
+            <div class="item-title">${escapeHtml(booking.date_display)} ${escapeHtml(booking.display_time)}-${escapeHtml(booking.display_end_time)}</div>
+            <div class="item-meta">${escapeHtml(booking.service_name)} for ${escapeHtml(booking.name)} · ${escapeHtml(booking.phone)}</div>
+            <div class="item-meta">${escapeHtml(booking.vehicle || '')}${booking.location ? ' · ' + escapeHtml(booking.location) : ''}</div>
+            ${booking.notes ? `<div class="item-meta">${escapeHtml(booking.notes)}</div>` : ''}
+          </div>
+          <div class="item-actions">
+            ${statusPill(booking.status)}
+            ${booking.status === 'confirmed' ? `<button class="btn btn-danger" type="button" onclick="cancelBooking('${booking.id}')">Cancel</button>` : ''}
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderSubscriptions() {
+      const el = document.getElementById('subscriptionsList');
+      const activeCount = state.subscriptions.filter(item => item.status === 'active').length;
+      document.getElementById('subscriptionCount').textContent = `${activeCount} active`;
+      if (!state.subscriptions.length) {
+        el.innerHTML = '<div class="empty">No subscriptions yet.</div>';
+        return;
+      }
+      el.innerHTML = state.subscriptions.map(sub => `
+        <article class="item">
+          <div>
+            <div class="item-title">${escapeHtml(sub.name)} · ${escapeHtml(sub.vehicle || 'Vehicle not set')}</div>
+            <div class="item-meta">Started ${escapeHtml(sub.date_display)} · ${escapeHtml(sub.preferred_day || 'Any day')} · ${escapeHtml(sub.preferred_time || sub.display_time)}</div>
+            <div class="item-meta">${escapeHtml(sub.phone)}${sub.email ? ' · ' + escapeHtml(sub.email) : ''}${sub.postcode ? ' · ' + escapeHtml(sub.postcode) : ''}</div>
+          </div>
+          <div class="item-actions">
+            ${statusPill(sub.status)}
+            ${sub.status === 'active' ? `<button class="btn btn-danger" type="button" onclick="cancelSubscription('${sub.id}')">Cancel Plan</button>` : ''}
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderBlockouts() {
+      const el = document.getElementById('blockoutsList');
+      if (!state.blockouts.length) {
+        el.innerHTML = '<div class="empty">No upcoming blocked slots.</div>';
+        return;
+      }
+      el.innerHTML = state.blockouts.map(blockout => `
+        <article class="item">
+          <div>
+            <div class="item-title">${escapeHtml(blockout.date_display)} ${escapeHtml(blockout.display_time)}-${escapeHtml(blockout.display_end_time)}</div>
+            <div class="item-meta">${escapeHtml(blockout.reason)}</div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-danger" type="button" onclick="deleteBlockout('${blockout.id}')">Remove</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderHours() {
+      const el = document.getElementById('hoursForm');
+      const hours = state.working_hours.length
+        ? state.working_hours
+        : weekdays.map((_, weekday) => ({ weekday, is_open: weekday < 6, start_time: '08:00', end_time: '18:00' }));
+      el.innerHTML = hours.map(row => `
+        <div class="hour-row" data-weekday="${row.weekday}">
+          <strong>${weekdays[row.weekday]}</strong>
+          <label class="check">
+            <input type="checkbox" class="hour-open" ${row.is_open ? 'checked' : ''}> Open
+          </label>
+          <input class="input hour-start" type="time" value="${escapeHtml(row.start_time)}">
+          <input class="input hour-end" type="time" value="${escapeHtml(row.end_time)}">
+        </div>
+      `).join('');
+    }
+
+    async function cancelBooking(id) {
+      const reason = prompt('Reason for cancellation?', 'Cancelled by admin') || '';
+      try {
+        await api(`/api/admin/bookings/${id}/cancel`, {
+          method: 'PATCH',
+          body: JSON.stringify({ reason }),
+        });
+        await loadState();
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    }
+
+    async function cancelSubscription(id) {
+      const reason = prompt('Reason for cancelling this subscription?', 'Subscription cancelled') || '';
+      try {
+        await api(`/api/admin/subscriptions/${id}/cancel`, {
+          method: 'PATCH',
+          body: JSON.stringify({ reason }),
+        });
+        await loadState();
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    }
+
+    async function deleteBlockout(id) {
+      try {
+        await api(`/api/admin/blockouts/${id}`, { method: 'DELETE' });
+        await loadState();
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    }
+
+    document.getElementById('blockoutForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      try {
+        await api('/api/admin/blockouts', {
+          method: 'POST',
+          body: JSON.stringify({
+            date: document.getElementById('blockDate').value,
+            start_time: document.getElementById('blockStart').value,
+            end_time: document.getElementById('blockEnd').value,
+            reason: document.getElementById('blockReason').value,
+          }),
+        });
+        event.target.reset();
+        document.getElementById('blockStart').value = '09:00';
+        document.getElementById('blockEnd').value = '12:00';
+        document.getElementById('blockReason').value = 'Unavailable';
+        await loadState();
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    });
+
+    async function saveHours() {
+      const hours = [...document.querySelectorAll('.hour-row')].map(row => ({
+        weekday: Number(row.dataset.weekday),
+        is_open: row.querySelector('.hour-open').checked,
+        start_time: row.querySelector('.hour-start').value,
+        end_time: row.querySelector('.hour-end').value,
+      }));
+      try {
+        await api('/api/admin/working-hours', {
+          method: 'PUT',
+          body: JSON.stringify({ hours }),
+        });
+        await loadState();
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    }
+
+    async function copyFeed() {
+      const value = document.getElementById('feedUrl').value;
+      if (!value) return;
+      await navigator.clipboard.writeText(value);
+      setStatus('Calendar link copied.', 'ok');
+    }
+
+    if (token()) {
+      loadState();
+    }
+  </script>
+</body>
+</html>

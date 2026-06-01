@@ -1,1 +1,6 @@
 node_modules/
+data/
+*.sqlite3
+__pycache__/
+.venv/
+.vercel/

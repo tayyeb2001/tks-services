@@ -941,7 +941,9 @@ function toggleFaq(btn) {
 
 
 // === BOOKING SYSTEM ===
-const API = "__PORT_8000__".startsWith("__") ? "http://localhost:8000" : "__PORT_8000__";
+const API = "__PORT_8000__".startsWith("__")
+  ? (window.location.protocol === "file:" ? "http://localhost:8000" : window.location.origin)
+  : "__PORT_8000__";
 
 const SERVICES = [
   { id: 'ceramic-wash', name: 'Ceramic Wash', price: 25, duration: '~30 min' },
@@ -1108,7 +1110,11 @@ async function loadDates() {
   const grid = document.getElementById('dateGrid');
   
   try {
-    const res = await fetch(`${API}/api/available-dates?service=${booking.service}`);
+    const params = new URLSearchParams({
+      service: booking.service,
+      addons: booking.addons.join(','),
+    });
+    const res = await fetch(`${API}/api/available-dates?${params.toString()}`);
     const data = await res.json();
     
     grid.innerHTML = data.dates.map(d => `
@@ -1159,7 +1165,12 @@ async function selectDate(date, display) {
   document.getElementById('step2Next').disabled = true;
   
   try {
-    const res = await fetch(`${API}/api/available-slots?date=${date}&service=${booking.service}`);
+    const params = new URLSearchParams({
+      date,
+      service: booking.service,
+      addons: booking.addons.join(','),
+    });
+    const res = await fetch(`${API}/api/available-slots?${params.toString()}`);
     const data = await res.json();
     
     if (data.slots.length === 0) {
@@ -1427,6 +1438,17 @@ async function submitSubscription() {
     phone: subscription.phone,
     email: subscription.email,
     vehicle: subscription.vehicleMake,
+    subscription: {
+      vehicleMake: subscription.vehicleMake,
+      vehicleReg: subscription.vehicleReg,
+      vehicleColour: subscription.vehicleColour,
+      condition: subscription.condition,
+      preferredDay: subscription.preferredDay,
+      preferredTime: subscription.preferredTime,
+      postcode: subscription.postcode,
+      address: subscription.address,
+      notes: subscription.notes,
+    },
     notes: [
       'MONTHLY SUBSCRIPTION SIGNUP',
       `Vehicle: ${subscription.vehicleMake}`,
