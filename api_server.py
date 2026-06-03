@@ -58,6 +58,18 @@ SERVICE_DURATIONS = {
     "monthly-subscription": 180,
 }
 
+SERVICE_CATALOG = [
+    {"id": "ceramic-wash", "name": "Ceramic Wash", "price": 25, "duration": SERVICE_DURATIONS["ceramic-wash"]},
+    {"id": "essential-valet", "name": "Essential Valet", "price": 45, "duration": SERVICE_DURATIONS["essential-valet"]},
+    {"id": "signature-valet", "name": "Signature Valet", "price": 90, "duration": SERVICE_DURATIONS["signature-valet"]},
+    {"id": "prestige-valet", "name": "Prestige Valet", "price": 130, "duration": SERVICE_DURATIONS["prestige-valet"]},
+    {"id": "machine-polish", "name": "Machine Polish", "price": 100, "duration": SERVICE_DURATIONS["machine-polish"]},
+    {"id": "steam-clean", "name": "Steam Clean", "price": 30, "duration": SERVICE_DURATIONS["steam-clean"]},
+    {"id": "engine-bay", "name": "Engine Bay Detail", "price": 30, "duration": SERVICE_DURATIONS["engine-bay"]},
+    {"id": "motorbike-valet", "name": "Motorbike Valet", "price": 30, "duration": SERVICE_DURATIONS["motorbike-valet"]},
+    {"id": "monthly-subscription", "name": "Monthly Subscription", "price": 99, "duration": SERVICE_DURATIONS["monthly-subscription"]},
+]
+
 ADDON_DURATIONS = {
     "machine-polish": 150,
     "steam-clean": 45,
@@ -66,6 +78,15 @@ ADDON_DURATIONS = {
     "pet-hair": 20,
     "tar-removal": 20,
 }
+
+ADDON_CATALOG = [
+    {"id": "machine-polish", "name": "Machine Polish", "price": 100, "duration": ADDON_DURATIONS["machine-polish"]},
+    {"id": "steam-clean", "name": "Steam Clean", "price": 30, "duration": ADDON_DURATIONS["steam-clean"]},
+    {"id": "engine-bay", "name": "Engine Bay Detail", "price": 30, "duration": ADDON_DURATIONS["engine-bay"]},
+    {"id": "motorbike-valet", "name": "Motorbike Valet", "price": 30, "duration": ADDON_DURATIONS["motorbike-valet"]},
+    {"id": "pet-hair", "name": "Pet Hair Removal", "price": 15, "duration": ADDON_DURATIONS["pet-hair"]},
+    {"id": "tar-removal", "name": "Tar Removal", "price": 10, "duration": ADDON_DURATIONS["tar-removal"]},
+]
 
 WEEKDAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 WEEKDAY_LOOKUP = {name.lower(): index for index, name in enumerate(WEEKDAY_NAMES)}
@@ -100,7 +121,26 @@ class BookingRequest(BaseModel):
     email: str = ""
     vehicle: str = ""
     notes: str = ""
+    location: str = ""
     subscription: Dict[str, Any] = Field(default_factory=dict)
+
+
+class BookingUpdateRequest(BaseModel):
+    service: Optional[str] = None
+    service_name: Optional[str] = None
+    service_price: Optional[int] = None
+    addons: Optional[List[str]] = None
+    addon_names: Optional[List[str]] = None
+    total_price: Optional[int] = None
+    date: Optional[str] = None
+    time: Optional[str] = None
+    end_time: Optional[str] = None
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    vehicle: Optional[str] = None
+    notes: Optional[str] = None
+    location: Optional[str] = None
 
 
 class BlockoutRequest(BaseModel):
@@ -123,6 +163,33 @@ class WorkingHourItem(BaseModel):
 
 class WorkingHoursRequest(BaseModel):
     hours: List[WorkingHourItem]
+
+
+class SubscriptionUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    vehicle: Optional[str] = None
+    vehicle_reg: Optional[str] = None
+    vehicle_colour: Optional[str] = None
+    condition: Optional[str] = None
+    preferred_day: Optional[str] = None
+    preferred_time: Optional[str] = None
+    start_date: Optional[str] = None
+    visit_time: Optional[str] = None
+    visit_end_time: Optional[str] = None
+    postcode: Optional[str] = None
+    address: Optional[str] = None
+    notes: Optional[str] = None
+    regenerate_future_visits: bool = False
+
+
+class SubscriptionVisitRequest(BaseModel):
+    date: str = ""
+    time: str = ""
+    duration_minutes: int = Field(default=120, ge=30, le=480)
+    service_name: str = "Monthly Maintenance Valet"
+    total_price: int = 40
 
 
 def now_iso() -> str:
@@ -358,6 +425,32 @@ def service_duration(service: str, addons: Optional[List[str]] = None) -> int:
     return duration
 
 
+def service_from_catalog(service_id: str) -> Optional[Dict[str, Any]]:
+    return next((service for service in SERVICE_CATALOG if service["id"] == service_id), None)
+
+
+def addon_names_for(addons: List[str]) -> List[str]:
+    names = []
+    for addon_id in addons:
+        match = next((addon for addon in ADDON_CATALOG if addon["id"] == addon_id), None)
+        names.append(match["name"] if match else addon_id)
+    return names
+
+
+def default_service_name(service_id: str) -> str:
+    match = service_from_catalog(service_id)
+    if match:
+        return str(match["name"])
+    return service_id.replace("-", " ").title()
+
+
+def default_service_price(service_id: str) -> int:
+    match = service_from_catalog(service_id)
+    if match:
+        return int(match["price"])
+    return 0
+
+
 def parse_addons_param(addons: str = "") -> List[str]:
     return [item.strip() for item in addons.split(",") if item.strip()]
 
@@ -399,16 +492,21 @@ def working_hours_for_date(conn: sqlite3.Connection, date_value: str) -> Optiona
     return row
 
 
-def busy_ranges(conn: sqlite3.Connection, date_value: str) -> List[Dict[str, Any]]:
+def busy_ranges(
+    conn: sqlite3.Connection,
+    date_value: str,
+    ignore_booking_id: str = "",
+    ignore_blockout_id: str = "",
+) -> List[Dict[str, Any]]:
     ranges: List[Dict[str, Any]] = []
     booking_rows = conn.execute(
         """
         SELECT id, time, end_time, service_name, name, type
         FROM bookings
-        WHERE date = ? AND status = 'confirmed'
+        WHERE date = ? AND status = 'confirmed' AND id <> ?
         ORDER BY time
         """,
-        (date_value,),
+        (date_value, ignore_booking_id),
     ).fetchall()
     for row in booking_rows:
         ranges.append(
@@ -425,10 +523,10 @@ def busy_ranges(conn: sqlite3.Connection, date_value: str) -> List[Dict[str, Any
         """
         SELECT id, start_time, end_time, reason
         FROM blockouts
-        WHERE date = ?
+        WHERE date = ? AND id <> ?
         ORDER BY start_time
         """,
-        (date_value,),
+        (date_value, ignore_blockout_id),
     ).fetchall()
     for row in blockout_rows:
         ranges.append(
@@ -449,6 +547,8 @@ def slot_availability(
     start_time: str,
     end_time: str,
     ignore_working_hours: bool = False,
+    ignore_booking_id: str = "",
+    ignore_blockout_id: str = "",
 ) -> Tuple[bool, str]:
     parse_date(date_value)
     start, end = validate_time_range(start_time, end_time)
@@ -462,7 +562,7 @@ def slot_availability(
         if start < working_start or end > working_end:
             return False, "Slot is outside working hours"
 
-    for busy in busy_ranges(conn, date_value):
+    for busy in busy_ranges(conn, date_value, ignore_booking_id, ignore_blockout_id):
         if ranges_overlap(start, end, busy["start"], busy["end"]):
             return False, f"Conflicts with {busy['label']}"
     return True, ""
@@ -579,6 +679,115 @@ def insert_booking(
     )
     row = conn.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,)).fetchone()
     return row_to_booking(row)
+
+
+def booking_payload_values(payload: BookingRequest, allow_custom_end: bool = False) -> Dict[str, Any]:
+    addons = payload.addons or []
+    addon_names = payload.addon_names or addon_names_for(addons)
+    service_name = payload.service_name.strip() or default_service_name(payload.service)
+    service_price = payload.service_price if payload.service_price else default_service_price(payload.service)
+    start_minutes = time_to_minutes(payload.time)
+    computed_end_time = minutes_to_time(start_minutes + service_duration(payload.service, addons))
+    end_time = payload.end_time if allow_custom_end and payload.end_time else computed_end_time
+    validate_time_range(payload.time, end_time)
+    total_price = payload.total_price if payload.total_price else service_price
+    return {
+        "service": payload.service,
+        "service_name": service_name,
+        "service_price": service_price,
+        "addons": addons,
+        "addon_names": addon_names,
+        "total_price": total_price,
+        "date": payload.date,
+        "time": payload.time,
+        "end_time": end_time,
+        "name": payload.name,
+        "phone": payload.phone,
+        "email": payload.email,
+        "vehicle": payload.vehicle,
+        "notes": payload.notes,
+        "location": payload.location,
+    }
+
+
+def subscription_location(subscription: Dict[str, Any]) -> str:
+    return str(
+        subscription.get("address")
+        or subscription.get("postcode")
+        or "Mobile - Customer Location"
+    )
+
+
+def create_subscription_visit(
+    conn: sqlite3.Connection,
+    subscription: Dict[str, Any],
+    *,
+    date_value: str,
+    start_time: str,
+    end_time: str,
+    service_name: str = "Monthly Maintenance Valet",
+    total_price: int = 40,
+    validate_slot: bool = True,
+) -> Dict[str, Any]:
+    return insert_booking(
+        conn,
+        booking_type="subscription_visit",
+        service="monthly-subscription",
+        service_name=service_name,
+        service_price=total_price,
+        addons=[],
+        addon_names=[],
+        total_price=total_price,
+        date_value=date_value,
+        start_time=start_time,
+        end_time=end_time,
+        name=str(subscription.get("name") or ""),
+        phone=str(subscription.get("phone") or ""),
+        email=str(subscription.get("email") or ""),
+        vehicle=str(subscription.get("vehicle") or ""),
+        notes=f"Monthly subscription visit for subscription {subscription['id']}",
+        location=subscription_location(subscription),
+        subscription_id=str(subscription["id"]),
+        validate_slot=validate_slot,
+    )
+
+
+def generate_future_subscription_visits(
+    conn: sqlite3.Connection,
+    subscription: Dict[str, Any],
+    first_target: date_cls,
+    count: int = SUBSCRIPTION_VISITS_TO_GENERATE,
+) -> List[Dict[str, Any]]:
+    preferred_day = str(subscription.get("preferred_day") or "")
+    desired_start = str(subscription.get("visit_time") or "09:00")
+    visit_start_minutes = time_to_minutes(desired_start)
+    visit_end = str(subscription.get("visit_end_time") or "")
+    duration = 120
+    if visit_end:
+        duration = max(30, time_to_minutes(visit_end) - visit_start_minutes)
+
+    generated: List[Dict[str, Any]] = []
+    for index in range(count):
+        target = add_months(first_target, index)
+        target = adjust_to_preferred_weekday(target, preferred_day)
+        visit_date, start_time, end_time = find_next_available_slot(
+            conn,
+            target,
+            desired_start,
+            duration,
+            max_days=14,
+        )
+        generated.append(
+            create_subscription_visit(
+                conn,
+                subscription,
+                date_value=visit_date,
+                start_time=start_time,
+                end_time=end_time,
+                validate_slot=False,
+            )
+        )
+    return generated
 
 
 def parse_subscription_notes(notes: str) -> Dict[str, str]:
@@ -857,6 +1066,15 @@ async def health() -> Dict[str, str]:
     return {"status": "ok", "timezone": LOCAL_TZ_NAME, "database": DB_BACKEND}
 
 
+@app.get("/api/services")
+async def services() -> Dict[str, Any]:
+    return {
+        "services": SERVICE_CATALOG,
+        "addons": ADDON_CATALOG,
+        "slot_interval": SLOT_INTERVAL,
+    }
+
+
 @app.get("/api/available-dates")
 async def get_available_dates(
     service: str = "essential-valet",
@@ -914,27 +1132,25 @@ async def create_booking(booking: BookingRequest) -> Dict[str, Any]:
         if booking.type == "subscription" or booking.service == "monthly-subscription":
             return create_subscription_from_booking(conn, booking)
 
-        duration = service_duration(booking.service, booking.addons)
-        start_minutes = time_to_minutes(booking.time)
-        end_time = minutes_to_time(start_minutes + duration)
+        values = booking_payload_values(booking)
         stored_booking = insert_booking(
             conn,
             booking_type="booking",
-            service=booking.service,
-            service_name=booking.service_name,
-            service_price=booking.service_price,
-            addons=booking.addons,
-            addon_names=booking.addon_names,
-            total_price=booking.total_price,
-            date_value=booking.date,
-            start_time=booking.time,
-            end_time=end_time,
-            name=booking.name,
-            phone=booking.phone,
-            email=booking.email,
-            vehicle=booking.vehicle,
-            notes=booking.notes,
-            location="Mobile - Customer Location",
+            service=values["service"],
+            service_name=values["service_name"],
+            service_price=values["service_price"],
+            addons=values["addons"],
+            addon_names=values["addon_names"],
+            total_price=values["total_price"],
+            date_value=values["date"],
+            start_time=values["time"],
+            end_time=values["end_time"],
+            name=values["name"],
+            phone=values["phone"],
+            email=values["email"],
+            vehicle=values["vehicle"],
+            notes=values["notes"],
+            location=values["location"] or "Mobile - Customer Location",
             validate_slot=True,
         )
 
@@ -947,7 +1163,9 @@ async def create_booking(booking: BookingRequest) -> Dict[str, Any]:
 
 @app.get("/api/admin/state", dependencies=[Depends(require_admin)])
 async def admin_state(request: Request) -> Dict[str, Any]:
-    start_date = today_local().isoformat()
+    today = today_local()
+    start_date = (today - timedelta(days=30)).isoformat()
+    today_value = today.isoformat()
     with db() as conn:
         bookings = [
             row_to_booking(row)
@@ -956,7 +1174,7 @@ async def admin_state(request: Request) -> Dict[str, Any]:
                 SELECT * FROM bookings
                 WHERE date >= ?
                 ORDER BY date, time
-                LIMIT 250
+                LIMIT 500
                 """,
                 (start_date,),
             ).fetchall()
@@ -985,12 +1203,76 @@ async def admin_state(request: Request) -> Dict[str, Any]:
                 "SELECT weekday, is_open, start_time, end_time FROM working_hours ORDER BY weekday"
             ).fetchall()
         ]
+        today_count = conn.execute(
+            """
+            SELECT COUNT(*) AS count FROM bookings
+            WHERE date = ? AND status = 'confirmed'
+            """,
+            (today_value,),
+        ).fetchone()["count"]
+        upcoming_count = conn.execute(
+            """
+            SELECT COUNT(*) AS count FROM bookings
+            WHERE date >= ? AND status = 'confirmed'
+            """,
+            (today_value,),
+        ).fetchone()["count"]
+        customer_rows = conn.execute(
+            """
+            SELECT name, phone, email, vehicle, date, total_price, status
+            FROM bookings
+            ORDER BY date DESC, time DESC
+            LIMIT 500
+            """
+        ).fetchall()
+
+    customers_by_key: Dict[str, Dict[str, Any]] = {}
+    for row in customer_rows:
+        item = dict(row)
+        key = (item.get("phone") or item.get("email") or item.get("name") or "").strip().lower()
+        if not key:
+            continue
+        customer = customers_by_key.setdefault(
+            key,
+            {
+                "name": item.get("name") or "",
+                "phone": item.get("phone") or "",
+                "email": item.get("email") or "",
+                "vehicle": item.get("vehicle") or "",
+                "last_booking_date": item.get("date") or "",
+                "booking_count": 0,
+                "total_spend": 0,
+            },
+        )
+        if not customer["last_booking_date"] or str(item.get("date") or "") > customer["last_booking_date"]:
+            customer["last_booking_date"] = item.get("date") or ""
+            customer["vehicle"] = item.get("vehicle") or customer["vehicle"]
+        if item.get("status") in ("confirmed", "completed"):
+            customer["booking_count"] += 1
+            customer["total_spend"] += int(item.get("total_price") or 0)
+
+    customers = sorted(
+        customers_by_key.values(),
+        key=lambda item: item["last_booking_date"],
+        reverse=True,
+    )[:100]
 
     return {
         "bookings": bookings,
         "subscriptions": subscriptions,
         "blockouts": blockouts,
         "working_hours": working_hours,
+        "customers": customers,
+        "stats": {
+            "today_bookings": int(today_count),
+            "upcoming_bookings": int(upcoming_count),
+            "active_subscriptions": len([item for item in subscriptions if item["status"] == "active"]),
+            "upcoming_blockouts": len(blockouts),
+        },
+        "catalog": {
+            "services": SERVICE_CATALOG,
+            "addons": ADDON_CATALOG,
+        },
         "settings": {
             "timezone": LOCAL_TZ_NAME,
             "database": DB_BACKEND,
@@ -1020,12 +1302,184 @@ async def cancel_booking(booking_id: str, payload: CancelRequest) -> Dict[str, A
     return {"success": True, "booking": row_to_booking(updated)}
 
 
+@app.post("/api/admin/bookings", dependencies=[Depends(require_admin)])
+async def create_admin_booking(payload: BookingRequest) -> Dict[str, Any]:
+    if not payload.name.strip() or not payload.phone.strip():
+        raise HTTPException(status_code=400, detail="Name and phone are required")
+
+    with db() as conn:
+        if payload.type == "subscription" or payload.service == "monthly-subscription":
+            return create_subscription_from_booking(conn, payload)
+
+        values = booking_payload_values(payload, allow_custom_end=True)
+        stored_booking = insert_booking(
+            conn,
+            booking_type="booking",
+            service=values["service"],
+            service_name=values["service_name"],
+            service_price=values["service_price"],
+            addons=values["addons"],
+            addon_names=values["addon_names"],
+            total_price=values["total_price"],
+            date_value=values["date"],
+            start_time=values["time"],
+            end_time=values["end_time"],
+            name=values["name"],
+            phone=values["phone"],
+            email=values["email"],
+            vehicle=values["vehicle"],
+            notes=values["notes"],
+            location=values["location"] or "Mobile - Customer Location",
+            validate_slot=True,
+        )
+
+    return {"success": True, "booking": stored_booking}
+
+
+@app.patch("/api/admin/bookings/{booking_id}", dependencies=[Depends(require_admin)])
+async def update_booking(booking_id: str, payload: BookingUpdateRequest) -> Dict[str, Any]:
+    with db() as conn:
+        row = conn.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Booking not found")
+
+        existing = row_to_booking(row)
+        addons = payload.addons if payload.addons is not None else existing["addons"]
+        addon_names = payload.addon_names if payload.addon_names is not None else existing["addon_names"]
+        service = payload.service if payload.service is not None else existing["service"]
+        service_name = (
+            payload.service_name.strip()
+            if payload.service_name is not None and payload.service_name.strip()
+            else existing["service_name"]
+        )
+        service_price = payload.service_price if payload.service_price is not None else existing["service_price"]
+        total_price = payload.total_price if payload.total_price is not None else existing["total_price"]
+        date_value = payload.date if payload.date is not None else existing["date"]
+        start_time = payload.time if payload.time is not None else existing["time"]
+
+        schedule_fields_changed = any(
+            value is not None
+            for value in (payload.service, payload.addons, payload.date, payload.time, payload.end_time)
+        )
+        if payload.end_time is not None and payload.end_time:
+            end_time = payload.end_time
+        elif schedule_fields_changed:
+            end_time = minutes_to_time(time_to_minutes(start_time) + service_duration(service, addons))
+        else:
+            end_time = existing["end_time"]
+
+        name = payload.name if payload.name is not None else existing["name"]
+        phone = payload.phone if payload.phone is not None else existing["phone"]
+        email = payload.email if payload.email is not None else existing["email"]
+        vehicle = payload.vehicle if payload.vehicle is not None else existing["vehicle"]
+        notes = payload.notes if payload.notes is not None else existing["notes"]
+        location = payload.location if payload.location is not None else existing["location"]
+
+        if not str(name).strip() or not str(phone).strip():
+            raise HTTPException(status_code=400, detail="Name and phone are required")
+        parse_date(date_value)
+        validate_time_range(start_time, end_time)
+
+        if existing["status"] == "confirmed":
+            available, reason = slot_availability(
+                conn,
+                date_value,
+                start_time,
+                end_time,
+                ignore_booking_id=booking_id,
+            )
+            if not available:
+                raise HTTPException(status_code=409, detail=reason)
+
+        conn.execute(
+            """
+            UPDATE bookings
+            SET service = ?, service_name = ?, service_price = ?, addons_json = ?,
+                addon_names_json = ?, total_price = ?, date = ?, time = ?,
+                end_time = ?, name = ?, phone = ?, email = ?, vehicle = ?,
+                notes = ?, location = ?, updated_at = ?
+            WHERE id = ?
+            """,
+            (
+                service,
+                service_name,
+                int(service_price or 0),
+                json.dumps(addons),
+                json.dumps(addon_names),
+                int(total_price or 0),
+                date_value,
+                start_time,
+                end_time,
+                str(name).strip(),
+                str(phone).strip(),
+                str(email or "").strip(),
+                str(vehicle or "").strip(),
+                str(notes or "").strip(),
+                str(location or "").strip(),
+                now_iso(),
+                booking_id,
+            ),
+        )
+        updated = conn.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,)).fetchone()
+
+    return {"success": True, "booking": row_to_booking(updated)}
+
+
+@app.patch("/api/admin/bookings/{booking_id}/restore", dependencies=[Depends(require_admin)])
+async def restore_booking(booking_id: str) -> Dict[str, Any]:
+    with db() as conn:
+        row = conn.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        booking = row_to_booking(row)
+        available, reason = slot_availability(
+            conn,
+            booking["date"],
+            booking["time"],
+            booking["end_time"],
+            ignore_booking_id=booking_id,
+        )
+        if not available:
+            raise HTTPException(status_code=409, detail=reason)
+        conn.execute(
+            """
+            UPDATE bookings
+            SET status = 'confirmed', cancelled_reason = '', updated_at = ?
+            WHERE id = ?
+            """,
+            (now_iso(), booking_id),
+        )
+        updated = conn.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,)).fetchone()
+    return {"success": True, "booking": row_to_booking(updated)}
+
+
+@app.patch("/api/admin/bookings/{booking_id}/complete", dependencies=[Depends(require_admin)])
+async def complete_booking(booking_id: str) -> Dict[str, Any]:
+    with db() as conn:
+        row = conn.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        conn.execute(
+            """
+            UPDATE bookings
+            SET status = 'completed', updated_at = ?
+            WHERE id = ?
+            """,
+            (now_iso(), booking_id),
+        )
+        updated = conn.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,)).fetchone()
+    return {"success": True, "booking": row_to_booking(updated)}
+
+
 @app.post("/api/admin/blockouts", dependencies=[Depends(require_admin)])
 async def create_blockout(payload: BlockoutRequest) -> Dict[str, Any]:
     parse_date(payload.date)
     validate_time_range(payload.start_time, payload.end_time)
     blockout_id = str(uuid.uuid4())
     with db() as conn:
+        available, reason = slot_availability(conn, payload.date, payload.start_time, payload.end_time)
+        if not available:
+            raise HTTPException(status_code=409, detail=reason)
         conn.execute(
             """
             INSERT INTO blockouts (id, date, start_time, end_time, reason, created_at)
@@ -1051,6 +1505,41 @@ async def delete_blockout(blockout_id: str) -> Dict[str, Any]:
         if cur.rowcount == 0:
             raise HTTPException(status_code=404, detail="Blockout not found")
     return {"success": True}
+
+
+@app.put("/api/admin/blockouts/{blockout_id}", dependencies=[Depends(require_admin)])
+async def update_blockout(blockout_id: str, payload: BlockoutRequest) -> Dict[str, Any]:
+    parse_date(payload.date)
+    validate_time_range(payload.start_time, payload.end_time)
+    with db() as conn:
+        row = conn.execute("SELECT * FROM blockouts WHERE id = ?", (blockout_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Blockout not found")
+        available, reason = slot_availability(
+            conn,
+            payload.date,
+            payload.start_time,
+            payload.end_time,
+            ignore_blockout_id=blockout_id,
+        )
+        if not available:
+            raise HTTPException(status_code=409, detail=reason)
+        conn.execute(
+            """
+            UPDATE blockouts
+            SET date = ?, start_time = ?, end_time = ?, reason = ?
+            WHERE id = ?
+            """,
+            (
+                payload.date,
+                payload.start_time,
+                payload.end_time,
+                payload.reason.strip() or "Unavailable",
+                blockout_id,
+            ),
+        )
+        updated = conn.execute("SELECT * FROM blockouts WHERE id = ?", (blockout_id,)).fetchone()
+    return {"success": True, "blockout": row_to_blockout(updated)}
 
 
 @app.put("/api/admin/working-hours", dependencies=[Depends(require_admin)])
@@ -1107,6 +1596,223 @@ async def cancel_subscription(subscription_id: str, payload: CancelRequest) -> D
         )
         updated = conn.execute("SELECT * FROM subscriptions WHERE id = ?", (subscription_id,)).fetchone()
     return {"success": True, "subscription": row_to_subscription(updated)}
+
+
+@app.patch("/api/admin/subscriptions/{subscription_id}", dependencies=[Depends(require_admin)])
+async def update_subscription(subscription_id: str, payload: SubscriptionUpdateRequest) -> Dict[str, Any]:
+    with db() as conn:
+        row = conn.execute("SELECT * FROM subscriptions WHERE id = ?", (subscription_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Subscription not found")
+        current = dict(row)
+
+        updates = dict(current)
+        for field_name in (
+            "name",
+            "phone",
+            "email",
+            "vehicle",
+            "vehicle_reg",
+            "vehicle_colour",
+            "condition",
+            "preferred_day",
+            "preferred_time",
+            "start_date",
+            "visit_time",
+            "visit_end_time",
+            "postcode",
+            "address",
+            "notes",
+        ):
+            value = getattr(payload, field_name)
+            if value is not None:
+                updates[field_name] = value.strip()
+
+        if not updates["name"].strip() or not updates["phone"].strip():
+            raise HTTPException(status_code=400, detail="Name and phone are required")
+        parse_date(updates["start_date"])
+
+        preferred_time_changed = payload.preferred_time is not None and payload.visit_time is None
+        if preferred_time_changed:
+            updates["visit_time"] = time_window_to_start(updates["preferred_time"])
+            updates["visit_end_time"] = minutes_to_time(time_to_minutes(updates["visit_time"]) + 120)
+        elif payload.visit_time is not None and payload.visit_end_time is None:
+            updates["visit_end_time"] = minutes_to_time(time_to_minutes(updates["visit_time"]) + 120)
+        validate_time_range(updates["visit_time"], updates["visit_end_time"])
+
+        timestamp = now_iso()
+        conn.execute(
+            """
+            UPDATE subscriptions
+            SET name = ?, phone = ?, email = ?, vehicle = ?, vehicle_reg = ?,
+                vehicle_colour = ?, condition = ?, preferred_day = ?,
+                preferred_time = ?, start_date = ?, visit_time = ?,
+                visit_end_time = ?, postcode = ?, address = ?, notes = ?,
+                updated_at = ?
+            WHERE id = ?
+            """,
+            (
+                updates["name"].strip(),
+                updates["phone"].strip(),
+                updates["email"].strip(),
+                updates["vehicle"].strip(),
+                updates["vehicle_reg"].strip(),
+                updates["vehicle_colour"].strip(),
+                updates["condition"].strip(),
+                updates["preferred_day"].strip(),
+                updates["preferred_time"].strip(),
+                updates["start_date"],
+                updates["visit_time"],
+                updates["visit_end_time"],
+                updates["postcode"].strip(),
+                updates["address"].strip(),
+                updates["notes"].strip(),
+                timestamp,
+                subscription_id,
+            ),
+        )
+        updated_row = conn.execute("SELECT * FROM subscriptions WHERE id = ?", (subscription_id,)).fetchone()
+        updated_subscription = dict(updated_row)
+        location = subscription_location(updated_subscription)
+        cutoff = today_local().isoformat()
+        conn.execute(
+            """
+            UPDATE bookings
+            SET name = ?, phone = ?, email = ?, vehicle = ?, location = ?, updated_at = ?
+            WHERE subscription_id = ? AND date >= ? AND status = 'confirmed'
+            """,
+            (
+                updated_subscription["name"],
+                updated_subscription["phone"],
+                updated_subscription["email"],
+                updated_subscription["vehicle"],
+                location,
+                timestamp,
+                subscription_id,
+                cutoff,
+            ),
+        )
+
+        generated_visits: List[Dict[str, Any]] = []
+        if payload.regenerate_future_visits:
+            conn.execute(
+                """
+                UPDATE bookings
+                SET status = 'cancelled', cancelled_reason = ?, updated_at = ?
+                WHERE subscription_id = ? AND type = 'subscription_visit'
+                    AND date >= ? AND status = 'confirmed'
+                """,
+                ("Subscription schedule regenerated", timestamp, subscription_id, cutoff),
+            )
+            first_target = max(today_local(), parse_date(updated_subscription["start_date"]))
+            generated_visits = generate_future_subscription_visits(
+                conn,
+                updated_subscription,
+                first_target,
+                SUBSCRIPTION_VISITS_TO_GENERATE,
+            )
+
+        final_row = conn.execute("SELECT * FROM subscriptions WHERE id = ?", (subscription_id,)).fetchone()
+
+    return {
+        "success": True,
+        "subscription": row_to_subscription(final_row),
+        "generated_visits": generated_visits,
+    }
+
+
+@app.post("/api/admin/subscriptions/{subscription_id}/visits", dependencies=[Depends(require_admin)])
+async def add_subscription_visit(subscription_id: str, payload: SubscriptionVisitRequest) -> Dict[str, Any]:
+    with db() as conn:
+        row = conn.execute("SELECT * FROM subscriptions WHERE id = ?", (subscription_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Subscription not found")
+        subscription = dict(row)
+        if subscription["status"] != "active":
+            raise HTTPException(status_code=400, detail="Subscription is not active")
+
+        duration = payload.duration_minutes
+        validate_exact_slot = bool(payload.date)
+        if payload.date:
+            date_value = parse_date(payload.date).isoformat()
+            start_time = payload.time or subscription["visit_time"]
+            end_time = minutes_to_time(time_to_minutes(start_time) + duration)
+            validate_time_range(start_time, end_time)
+        else:
+            latest_row = conn.execute(
+                """
+                SELECT MAX(date) AS date
+                FROM bookings
+                WHERE subscription_id = ? AND status = 'confirmed'
+                """,
+                (subscription_id,),
+            ).fetchone()
+            latest_date = latest_row["date"] if latest_row else ""
+            target = today_local()
+            if latest_date:
+                target = max(target, add_months(parse_date(latest_date), 1))
+            target = adjust_to_preferred_weekday(target, subscription.get("preferred_day") or "")
+            date_value, start_time, end_time = find_next_available_slot(
+                conn,
+                target,
+                subscription["visit_time"],
+                duration,
+                max_days=30,
+            )
+
+        booking = create_subscription_visit(
+            conn,
+            subscription,
+            date_value=date_value,
+            start_time=start_time,
+            end_time=end_time,
+            service_name=payload.service_name.strip() or "Monthly Maintenance Valet",
+            total_price=payload.total_price,
+            validate_slot=validate_exact_slot,
+        )
+
+    return {"success": True, "booking": booking}
+
+
+@app.get("/api/admin/day", dependencies=[Depends(require_admin)])
+async def admin_day(
+    date: str,
+    service: str = "essential-valet",
+    addons: str = "",
+) -> Dict[str, Any]:
+    addon_list = parse_addons_param(addons)
+    with db() as conn:
+        day_bookings = [
+            row_to_booking(row)
+            for row in conn.execute(
+                """
+                SELECT * FROM bookings
+                WHERE date = ?
+                ORDER BY time
+                """,
+                (date,),
+            ).fetchall()
+        ]
+        day_blockouts = [
+            row_to_blockout(row)
+            for row in conn.execute(
+                """
+                SELECT * FROM blockouts
+                WHERE date = ?
+                ORDER BY start_time
+                """,
+                (date,),
+            ).fetchall()
+        ]
+        hours = working_hours_for_date(conn, date)
+        slots = available_slots_for_date(conn, date, service, addon_list)
+    return {
+        "date": parse_date(date).isoformat(),
+        "working_hours": dict(hours) if hours else None,
+        "bookings": day_bookings,
+        "blockouts": day_blockouts,
+        "available_slots": slots,
+    }
 
 
 @app.get("/calendar/tks-services.ics", dependencies=[Depends(require_calendar_token)])

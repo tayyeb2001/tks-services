@@ -9,6 +9,7 @@
       --bg: #101114;
       --panel: #181a1f;
       --panel-2: #20232a;
+      --panel-3: #121419;
       --line: #30343d;
       --text: #f4f1e8;
       --muted: #aaa59a;
@@ -16,11 +17,13 @@
       --gold-2: #f0c36a;
       --danger: #f46f6f;
       --ok: #72d28b;
+      --blue: #7fb4ff;
       --shadow: 0 16px 60px rgba(0, 0, 0, 0.35);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       background: var(--bg);
@@ -28,7 +31,7 @@
       line-height: 1.5;
     }
 
-    button, input, textarea {
+    button, input, textarea, select {
       font: inherit;
     }
 
@@ -37,27 +40,38 @@
       border: 0;
     }
 
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0 48px;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 22px;
-    }
-
     h1, h2, h3, p {
       margin: 0;
     }
 
     h1 {
-      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
       letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: 1.05rem;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: 0.98rem;
+      letter-spacing: 0;
+    }
+
+    .shell {
+      width: min(1380px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) minmax(260px, 460px);
+      align-items: start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
     }
 
     .subtle {
@@ -67,9 +81,8 @@
 
     .login {
       display: grid;
-      grid-template-columns: minmax(180px, 280px) auto;
+      grid-template-columns: minmax(180px, 1fr) auto auto;
       gap: 10px;
-      min-width: min(100%, 430px);
     }
 
     .input, .select, .textarea {
@@ -78,22 +91,33 @@
       background: #111216;
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 11px 12px;
+      padding: 10px 11px;
+      min-height: 42px;
       outline: none;
     }
 
-    .input:focus, .textarea:focus {
+    .textarea {
+      resize: vertical;
+      min-height: 84px;
+    }
+
+    .input:focus, .select:focus, .textarea:focus {
       border-color: var(--gold);
       box-shadow: 0 0 0 3px rgba(215, 166, 79, 0.14);
     }
 
     .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       border-radius: 8px;
-      padding: 11px 14px;
+      padding: 10px 13px;
+      min-height: 42px;
       color: var(--text);
       background: var(--panel-2);
       border: 1px solid var(--line);
-      min-height: 42px;
+      white-space: nowrap;
     }
 
     .btn:hover {
@@ -111,12 +135,56 @@
       color: #260909;
       background: var(--danger);
       border-color: var(--danger);
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .grid {
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn-small {
+      min-height: 34px;
+      padding: 7px 9px;
+      font-size: 0.88rem;
+    }
+
+    .status {
+      min-height: 24px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .stats {
       display: grid;
-      grid-template-columns: 1.4fr 0.9fr;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-bottom: 4px;
+    }
+
+    .stat strong {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.85fr);
       gap: 18px;
       align-items: start;
     }
@@ -142,9 +210,61 @@
       margin-bottom: 14px;
     }
 
-    .panel-head h2 {
-      font-size: 1.05rem;
-      letter-spacing: 0;
+    .panel-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) 150px 160px 150px;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      padding: 13px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--panel-3);
+    }
+
+    .item-title {
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .item-meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 4px;
+      overflow-wrap: anywhere;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      text-align: center;
     }
 
     .pill {
@@ -158,6 +278,7 @@
       color: var(--muted);
       font-size: 0.82rem;
       white-space: nowrap;
+      text-transform: capitalize;
     }
 
     .pill-ok {
@@ -175,37 +296,9 @@
       border-color: rgba(244, 111, 111, 0.3);
     }
 
-    .list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 14px;
-      padding: 13px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: #121419;
-    }
-
-    .item-title {
-      font-weight: 800;
-    }
-
-    .item-meta {
-      color: var(--muted);
-      font-size: 0.92rem;
-      margin-top: 4px;
-    }
-
-    .item-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      justify-content: flex-end;
-      flex-wrap: wrap;
+    .pill-blue {
+      color: var(--blue);
+      border-color: rgba(127, 180, 255, 0.3);
     }
 
     .form-grid {
@@ -225,6 +318,39 @@
       font-size: 0.9rem;
     }
 
+    .checks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 8px;
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: #111216;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+      margin-top: 4px;
+    }
+
+    .summary-line strong {
+      color: var(--text);
+    }
+
     .hours {
       display: grid;
       gap: 8px;
@@ -232,21 +358,13 @@
 
     .hour-row {
       display: grid;
-      grid-template-columns: 98px 72px 1fr 1fr;
+      grid-template-columns: 100px 74px 1fr 1fr;
       gap: 8px;
       align-items: center;
       padding: 9px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: #121419;
-    }
-
-    .check {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      color: var(--text);
-      font-size: 0.92rem;
+      background: var(--panel-3);
     }
 
     .feed {
@@ -254,42 +372,67 @@
       gap: 10px;
     }
 
-    .status {
-      min-height: 24px;
-      margin: 10px 0 0;
-      color: var(--muted);
-    }
-
-    .empty {
-      color: var(--muted);
-      padding: 14px;
-      border: 1px dashed var(--line);
+    dialog {
+      width: min(820px, calc(100% - 28px));
+      border: 1px solid var(--line);
       border-radius: 8px;
-      text-align: center;
+      padding: 0;
+      background: var(--panel);
+      color: var(--text);
+      box-shadow: 0 30px 120px rgba(0, 0, 0, 0.68);
     }
 
-    @media (max-width: 860px) {
-      .topbar, .grid {
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.68);
+    }
+
+    .modal-body {
+      padding: 18px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 14px 18px 18px;
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1040px) {
+      .topbar, .layout {
         grid-template-columns: 1fr;
-        display: grid;
       }
 
-      .login {
+      .status {
+        text-align: left;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .login, .filters, .form-grid, .checks, .hour-row, .item {
         grid-template-columns: 1fr;
       }
 
-      .item {
+      .stats {
         grid-template-columns: 1fr;
       }
 
-      .item-actions {
+      .item-actions, .panel-actions {
         justify-content: flex-start;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .form-grid, .hour-row {
-        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -299,23 +442,50 @@
     <header class="topbar">
       <div>
         <h1>TKS Booking Admin</h1>
-        <p class="subtle">Manage bookings, subscriptions, working hours, blocked slots, and iPhone calendar sync.</p>
+        <p class="subtle">Manage bookings, subscriptions, working hours, blocked slots, customer history, and iPhone calendar sync.</p>
       </div>
       <div>
         <div class="login">
           <input id="tokenInput" class="input" type="password" autocomplete="current-password" placeholder="Admin token">
-          <button class="btn btn-primary" type="button" onclick="saveToken()">Load Admin</button>
+          <button class="btn btn-primary" type="button" onclick="saveToken()">Load</button>
+          <button class="btn" type="button" onclick="loadState()">Refresh</button>
         </div>
         <p id="status" class="status"></p>
       </div>
     </header>
 
-    <section class="grid">
+    <section class="stats" aria-label="Booking summary">
+      <div class="stat"><span>Today</span><strong id="statToday">0</strong></div>
+      <div class="stat"><span>Upcoming</span><strong id="statUpcoming">0</strong></div>
+      <div class="stat"><span>Active Plans</span><strong id="statSubs">0</strong></div>
+      <div class="stat"><span>Blocked Slots</span><strong id="statBlocks">0</strong></div>
+    </section>
+
+    <section class="layout">
       <div class="stack">
         <section class="panel">
           <div class="panel-head">
-            <h2>Upcoming Bookings</h2>
-            <button class="btn" type="button" onclick="loadState()">Refresh</button>
+            <h2>Bookings</h2>
+            <div class="panel-actions">
+              <button class="btn btn-small" type="button" onclick="resetFilters()">Clear Filters</button>
+              <button class="btn btn-small btn-primary" type="button" onclick="document.getElementById('createBookingName').focus()">New Booking</button>
+            </div>
+          </div>
+          <div class="filters">
+            <input id="bookingSearch" class="input" type="search" placeholder="Search customer, phone, service, vehicle">
+            <select id="statusFilter" class="select">
+              <option value="confirmed">Confirmed</option>
+              <option value="all">All statuses</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="completed">Completed</option>
+            </select>
+            <select id="typeFilter" class="select">
+              <option value="all">All booking types</option>
+              <option value="booking">One-off</option>
+              <option value="subscription_initial">Plan initial</option>
+              <option value="subscription_visit">Plan visits</option>
+            </select>
+            <input id="dateFilter" class="input" type="date">
           </div>
           <div id="bookingsList" class="list">
             <div class="empty">Enter the admin token to load bookings.</div>
@@ -331,9 +501,68 @@
             <div class="empty">No subscriptions loaded.</div>
           </div>
         </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Customers</h2>
+            <span id="customerCount" class="pill">0 customers</span>
+          </div>
+          <div id="customersList" class="list">
+            <div class="empty">No customers loaded.</div>
+          </div>
+        </section>
       </div>
 
       <div class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Create Booking</h2>
+            <span id="createEstimate" class="pill pill-blue">Select a service</span>
+          </div>
+          <form id="createBookingForm" class="form-grid">
+            <label class="wide">Service
+              <select id="createService" class="select" required></select>
+            </label>
+            <label>Date
+              <input id="createDate" class="input" type="date" required>
+            </label>
+            <label>Start
+              <input id="createTime" class="input" type="time" value="09:00" required>
+            </label>
+            <label>End
+              <input id="createEndTime" class="input" type="time">
+            </label>
+            <label>Service Price
+              <input id="createServicePrice" class="input" type="number" min="0" step="1" value="0">
+            </label>
+            <label class="wide">Add-ons
+              <div id="createAddons" class="checks"></div>
+            </label>
+            <label>Total Price
+              <input id="createTotalPrice" class="input" type="number" min="0" step="1" value="0">
+            </label>
+            <label>Name
+              <input id="createBookingName" class="input" type="text" required>
+            </label>
+            <label>Phone
+              <input id="createBookingPhone" class="input" type="tel" required>
+            </label>
+            <label>Email
+              <input id="createBookingEmail" class="input" type="email">
+            </label>
+            <label>Vehicle
+              <input id="createBookingVehicle" class="input" type="text">
+            </label>
+            <label class="wide">Location
+              <input id="createBookingLocation" class="input" type="text" value="Mobile - Customer Location">
+            </label>
+            <label class="wide">Notes
+              <textarea id="createBookingNotes" class="textarea"></textarea>
+            </label>
+            <button class="btn btn-primary wide" type="submit">Create Booking</button>
+          </form>
+        </section>
+
         <section class="panel">
           <div class="panel-head">
             <h2>iPhone Calendar Feed</h2>
@@ -349,8 +578,10 @@
         <section class="panel">
           <div class="panel-head">
             <h2>Block Out Slots</h2>
+            <button id="resetBlockoutButton" class="btn btn-small btn-ghost" type="button" onclick="resetBlockoutForm()">New Block</button>
           </div>
           <form id="blockoutForm" class="form-grid">
+            <input id="editingBlockoutId" type="hidden">
             <label class="wide">Date
               <input id="blockDate" class="input" type="date" required>
             </label>
@@ -363,7 +594,7 @@
             <label class="wide">Reason
               <input id="blockReason" class="input" type="text" value="Unavailable">
             </label>
-            <button class="btn btn-primary wide" type="submit">Add Block</button>
+            <button id="blockoutSubmit" class="btn btn-primary wide" type="submit">Add Block</button>
           </form>
           <div id="blockoutsList" class="list" style="margin-top:14px">
             <div class="empty">No blockouts loaded.</div>
@@ -381,14 +612,200 @@
     </section>
   </main>
 
+  <dialog id="bookingDialog">
+    <form id="editBookingForm" method="dialog">
+      <div class="modal-head">
+        <h2>Edit Booking</h2>
+        <button class="btn btn-small" type="button" onclick="closeBookingDialog()">Close</button>
+      </div>
+      <div class="modal-body">
+        <input id="editBookingId" type="hidden">
+        <div class="form-grid">
+          <label class="wide">Service
+            <select id="editService" class="select" required></select>
+          </label>
+          <label>Date
+            <input id="editDate" class="input" type="date" required>
+          </label>
+          <label>Start
+            <input id="editTime" class="input" type="time" required>
+          </label>
+          <label>End
+            <input id="editEndTime" class="input" type="time">
+          </label>
+          <label>Service Price
+            <input id="editServicePrice" class="input" type="number" min="0" step="1">
+          </label>
+          <label>Total Price
+            <input id="editTotalPrice" class="input" type="number" min="0" step="1">
+          </label>
+          <label class="wide">Add-ons
+            <div id="editAddons" class="checks"></div>
+          </label>
+          <label>Name
+            <input id="editName" class="input" type="text" required>
+          </label>
+          <label>Phone
+            <input id="editPhone" class="input" type="tel" required>
+          </label>
+          <label>Email
+            <input id="editEmail" class="input" type="email">
+          </label>
+          <label>Vehicle
+            <input id="editVehicle" class="input" type="text">
+          </label>
+          <label class="wide">Location
+            <input id="editLocation" class="input" type="text">
+          </label>
+          <label class="wide">Notes
+            <textarea id="editNotes" class="textarea"></textarea>
+          </label>
+        </div>
+        <div class="summary-line">
+          <span id="editEstimate">Duration will update from service and add-ons.</span>
+          <strong id="editStatusLabel"></strong>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" onclick="closeBookingDialog()">Cancel</button>
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="subscriptionDialog">
+    <form id="editSubscriptionForm" method="dialog">
+      <div class="modal-head">
+        <h2>Edit Subscription</h2>
+        <button class="btn btn-small" type="button" onclick="closeSubscriptionDialog()">Close</button>
+      </div>
+      <div class="modal-body">
+        <input id="editSubscriptionId" type="hidden">
+        <div class="form-grid">
+          <label>Name
+            <input id="subName" class="input" type="text" required>
+          </label>
+          <label>Phone
+            <input id="subPhone" class="input" type="tel" required>
+          </label>
+          <label>Email
+            <input id="subEmail" class="input" type="email">
+          </label>
+          <label>Vehicle
+            <input id="subVehicle" class="input" type="text">
+          </label>
+          <label>Registration
+            <input id="subReg" class="input" type="text">
+          </label>
+          <label>Colour
+            <input id="subColour" class="input" type="text">
+          </label>
+          <label>Condition
+            <input id="subCondition" class="input" type="text">
+          </label>
+          <label>Preferred Day
+            <select id="subPreferredDay" class="select">
+              <option value="">Any day</option>
+              <option>Monday</option>
+              <option>Tuesday</option>
+              <option>Wednesday</option>
+              <option>Thursday</option>
+              <option>Friday</option>
+              <option>Saturday</option>
+              <option>Sunday</option>
+            </select>
+          </label>
+          <label>Preferred Time
+            <select id="subPreferredTime" class="select">
+              <option value="">Any time</option>
+              <option>Morning</option>
+              <option>Afternoon</option>
+              <option>Evening</option>
+            </select>
+          </label>
+          <label>Start Date
+            <input id="subStartDate" class="input" type="date" required>
+          </label>
+          <label>Visit Start
+            <input id="subVisitTime" class="input" type="time" required>
+          </label>
+          <label>Visit End
+            <input id="subVisitEndTime" class="input" type="time" required>
+          </label>
+          <label>Postcode
+            <input id="subPostcode" class="input" type="text">
+          </label>
+          <label class="wide">Address
+            <input id="subAddress" class="input" type="text">
+          </label>
+          <label class="wide">Notes
+            <textarea id="subNotes" class="textarea"></textarea>
+          </label>
+          <label class="wide check">
+            <input id="subRegenerate" type="checkbox">
+            Regenerate future monthly visits from this schedule
+          </label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" onclick="closeSubscriptionDialog()">Cancel</button>
+        <button class="btn btn-primary" type="submit">Save Subscription</button>
+      </div>
+    </form>
+  </dialog>
+
   <script>
+    const fallbackServices = [
+      { id: 'ceramic-wash', name: 'Ceramic Wash', price: 25, duration: 30 },
+      { id: 'essential-valet', name: 'Essential Valet', price: 45, duration: 60 },
+      { id: 'signature-valet', name: 'Signature Valet', price: 90, duration: 120 },
+      { id: 'prestige-valet', name: 'Prestige Valet', price: 130, duration: 180 },
+      { id: 'machine-polish', name: 'Machine Polish', price: 100, duration: 150 },
+      { id: 'steam-clean', name: 'Steam Clean', price: 30, duration: 45 },
+      { id: 'engine-bay', name: 'Engine Bay Detail', price: 30, duration: 60 },
+      { id: 'motorbike-valet', name: 'Motorbike Valet', price: 30, duration: 45 },
+      { id: 'monthly-subscription', name: 'Monthly Subscription', price: 99, duration: 180 },
+    ];
+    const fallbackAddons = [
+      { id: 'machine-polish', name: 'Machine Polish', price: 100, duration: 150 },
+      { id: 'steam-clean', name: 'Steam Clean', price: 30, duration: 45 },
+      { id: 'engine-bay', name: 'Engine Bay Detail', price: 30, duration: 60 },
+      { id: 'motorbike-valet', name: 'Motorbike Valet', price: 30, duration: 45 },
+      { id: 'pet-hair', name: 'Pet Hair Removal', price: 15, duration: 20 },
+      { id: 'tar-removal', name: 'Tar Removal', price: 10, duration: 20 },
+    ];
+
     const tokenInput = document.getElementById('tokenInput');
     const statusEl = document.getElementById('status');
-    const state = { bookings: [], subscriptions: [], blockouts: [], working_hours: [], settings: {} };
+    const bookingDialog = document.getElementById('bookingDialog');
+    const subscriptionDialog = document.getElementById('subscriptionDialog');
     const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
+    const state = {
+      bookings: [],
+      subscriptions: [],
+      blockouts: [],
+      working_hours: [],
+      customers: [],
+      stats: {},
+      catalog: { services: fallbackServices, addons: fallbackAddons },
+      settings: {},
+    };
+
+    let createEndManual = false;
+    let createTotalManual = false;
+    let editEndManual = false;
+    let editTotalManual = false;
+
     tokenInput.value = localStorage.getItem('tksAdminToken') || '';
-    document.getElementById('blockDate').min = new Date().toISOString().split('T')[0];
+    document.getElementById('createDate').min = todayInputValue();
+    document.getElementById('blockDate').min = todayInputValue();
+
+    function todayInputValue() {
+      const date = new Date();
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+      return date.toISOString().slice(0, 10);
+    }
 
     function token() {
       return tokenInput.value.trim();
@@ -407,6 +824,51 @@
         '"': '&quot;',
         "'": '&#039;',
       }[char]));
+    }
+
+    function money(value) {
+      return `GBP ${Number(value || 0)}`;
+    }
+
+    function serviceById(id) {
+      return services().find(item => item.id === id) || fallbackServices.find(item => item.id === id) || { id, name: id, price: 0, duration: 60 };
+    }
+
+    function addonById(id) {
+      return addons().find(item => item.id === id) || fallbackAddons.find(item => item.id === id) || { id, name: id, price: 0, duration: 0 };
+    }
+
+    function services() {
+      return state.catalog.services && state.catalog.services.length ? state.catalog.services : fallbackServices;
+    }
+
+    function addons() {
+      return state.catalog.addons && state.catalog.addons.length ? state.catalog.addons : fallbackAddons;
+    }
+
+    function oneOffServices() {
+      return services().filter(service => service.id !== 'monthly-subscription');
+    }
+
+    function addMinutes(time, minutes) {
+      if (!time) return '';
+      const [hour, minute] = time.split(':').map(Number);
+      if (Number.isNaN(hour) || Number.isNaN(minute)) return '';
+      const total = hour * 60 + minute + Number(minutes || 0);
+      if (total < 0 || total >= 24 * 60) return '';
+      return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+    }
+
+    function selectedAddons(containerId) {
+      return [...document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`)].map(input => input.value);
+    }
+
+    function durationFor(serviceId, addonIds) {
+      return Number(serviceById(serviceId).duration || 60) + addonIds.reduce((sum, id) => sum + Number(addonById(id).duration || 0), 0);
+    }
+
+    function priceFor(serviceId, addonIds) {
+      return Number(serviceById(serviceId).price || 0) + addonIds.reduce((sum, id) => sum + Number(addonById(id).price || 0), 0);
     }
 
     async function api(path, options = {}) {
@@ -433,10 +895,11 @@
         setStatus('Enter the admin token.', 'error');
         return;
       }
-      setStatus('Loading...');
+      setStatus('Loading admin data...');
       try {
         const data = await api('/api/admin/state');
         Object.assign(state, data);
+        state.catalog = data.catalog || state.catalog;
         renderAll();
         setStatus('Admin loaded.', 'ok');
       } catch (error) {
@@ -444,21 +907,48 @@
       }
     }
 
-    function statusPill(status) {
-      const className = status === 'confirmed' || status === 'active'
-        ? 'pill pill-ok'
-        : status === 'cancelled'
-          ? 'pill pill-danger'
-          : 'pill pill-warn';
-      return `<span class="${className}">${escapeHtml(status)}</span>`;
-    }
-
     function renderAll() {
+      renderStats();
+      renderCatalogControls();
       renderBookings();
       renderSubscriptions();
+      renderCustomers();
       renderBlockouts();
       renderHours();
       renderSettings();
+      refreshCreateEstimate(true);
+    }
+
+    function renderStats() {
+      document.getElementById('statToday').textContent = state.stats.today_bookings || 0;
+      document.getElementById('statUpcoming').textContent = state.stats.upcoming_bookings || 0;
+      document.getElementById('statSubs').textContent = state.stats.active_subscriptions || 0;
+      document.getElementById('statBlocks').textContent = state.stats.upcoming_blockouts || 0;
+    }
+
+    function renderCatalogControls() {
+      const createService = document.getElementById('createService');
+      createService.innerHTML = oneOffServices().map(service => `<option value="${escapeHtml(service.id)}">${escapeHtml(service.name)}</option>`).join('');
+      if (!createService.value && oneOffServices()[0]) createService.value = oneOffServices()[0].id;
+
+      const editService = document.getElementById('editService');
+      editService.innerHTML = services().map(service => `<option value="${escapeHtml(service.id)}">${escapeHtml(service.name)}</option>`).join('');
+
+      document.getElementById('createAddons').innerHTML = addons().map(addon => `
+        <label class="check">
+          <input type="checkbox" value="${escapeHtml(addon.id)}">
+          ${escapeHtml(addon.name)} (${money(addon.price)})
+        </label>
+      `).join('');
+      document.getElementById('editAddons').innerHTML = addons().map(addon => `
+        <label class="check">
+          <input type="checkbox" value="${escapeHtml(addon.id)}">
+          ${escapeHtml(addon.name)} (${money(addon.price)})
+        </label>
+      `).join('');
+
+      document.querySelectorAll('#createAddons input').forEach(input => input.addEventListener('change', () => refreshCreateEstimate()));
+      document.querySelectorAll('#editAddons input').forEach(input => input.addEventListener('change', () => refreshEditEstimate()));
     }
 
     function renderSettings() {
@@ -470,23 +960,70 @@
       }
     }
 
+    function statusPill(status) {
+      const className = status === 'confirmed' || status === 'active'
+        ? 'pill pill-ok'
+        : status === 'cancelled'
+          ? 'pill pill-danger'
+          : status === 'completed'
+            ? 'pill pill-blue'
+            : 'pill pill-warn';
+      return `<span class="${className}">${escapeHtml(status)}</span>`;
+    }
+
+    function typeLabel(type) {
+      return {
+        booking: 'One-off',
+        subscription_initial: 'Plan initial',
+        subscription_visit: 'Plan visit',
+      }[type] || type;
+    }
+
+    function filteredBookings() {
+      const q = document.getElementById('bookingSearch').value.trim().toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const type = document.getElementById('typeFilter').value;
+      const date = document.getElementById('dateFilter').value;
+      return state.bookings.filter(booking => {
+        if (status !== 'all' && booking.status !== status) return false;
+        if (type !== 'all' && booking.type !== type) return false;
+        if (date && booking.date !== date) return false;
+        if (!q) return true;
+        return [
+          booking.name,
+          booking.phone,
+          booking.email,
+          booking.service_name,
+          booking.vehicle,
+          booking.location,
+          booking.notes,
+        ].join(' ').toLowerCase().includes(q);
+      });
+    }
+
     function renderBookings() {
       const el = document.getElementById('bookingsList');
-      if (!state.bookings.length) {
-        el.innerHTML = '<div class="empty">No upcoming bookings.</div>';
+      const bookings = filteredBookings();
+      if (!bookings.length) {
+        el.innerHTML = '<div class="empty">No bookings match the current filters.</div>';
         return;
       }
-      el.innerHTML = state.bookings.map(booking => `
+      el.innerHTML = bookings.map(booking => `
         <article class="item">
           <div>
             <div class="item-title">${escapeHtml(booking.date_display)} ${escapeHtml(booking.display_time)}-${escapeHtml(booking.display_end_time)}</div>
-            <div class="item-meta">${escapeHtml(booking.service_name)} for ${escapeHtml(booking.name)} · ${escapeHtml(booking.phone)}</div>
-            <div class="item-meta">${escapeHtml(booking.vehicle || '')}${booking.location ? ' · ' + escapeHtml(booking.location) : ''}</div>
+            <div class="item-meta">${escapeHtml(booking.service_name)} - ${escapeHtml(typeLabel(booking.type))} - ${money(booking.total_price)}</div>
+            <div class="item-meta">${escapeHtml(booking.name)} - ${escapeHtml(booking.phone)}${booking.email ? ' - ' + escapeHtml(booking.email) : ''}</div>
+            <div class="item-meta">${escapeHtml(booking.vehicle || 'Vehicle not set')}${booking.location ? ' - ' + escapeHtml(booking.location) : ''}</div>
+            ${booking.addon_names && booking.addon_names.length ? `<div class="item-meta">Add-ons: ${escapeHtml(booking.addon_names.join(', '))}</div>` : ''}
             ${booking.notes ? `<div class="item-meta">${escapeHtml(booking.notes)}</div>` : ''}
+            ${booking.cancelled_reason ? `<div class="item-meta">Cancelled: ${escapeHtml(booking.cancelled_reason)}</div>` : ''}
           </div>
           <div class="item-actions">
             ${statusPill(booking.status)}
-            ${booking.status === 'confirmed' ? `<button class="btn btn-danger" type="button" onclick="cancelBooking('${booking.id}')">Cancel</button>` : ''}
+            <button class="btn btn-small" type="button" onclick="openBookingDialog('${booking.id}')">Edit</button>
+            ${booking.status === 'confirmed' ? `<button class="btn btn-small" type="button" onclick="completeBooking('${booking.id}')">Complete</button>` : ''}
+            ${booking.status === 'confirmed' ? `<button class="btn btn-small btn-danger" type="button" onclick="cancelBooking('${booking.id}')">Cancel</button>` : `<button class="btn btn-small" type="button" onclick="restoreBooking('${booking.id}')">Restore</button>`}
           </div>
         </article>
       `).join('');
@@ -500,16 +1037,44 @@
         el.innerHTML = '<div class="empty">No subscriptions yet.</div>';
         return;
       }
-      el.innerHTML = state.subscriptions.map(sub => `
+      el.innerHTML = state.subscriptions.map(sub => {
+        const visitCount = state.bookings.filter(booking => booking.subscription_id === sub.id && booking.status === 'confirmed').length;
+        return `
+          <article class="item">
+            <div>
+              <div class="item-title">${escapeHtml(sub.name)} - ${escapeHtml(sub.vehicle || 'Vehicle not set')}</div>
+              <div class="item-meta">Started ${escapeHtml(sub.date_display)} - ${escapeHtml(sub.preferred_day || 'Any day')} - ${escapeHtml(sub.preferred_time || sub.display_time)}</div>
+              <div class="item-meta">${escapeHtml(sub.phone)}${sub.email ? ' - ' + escapeHtml(sub.email) : ''}${sub.postcode ? ' - ' + escapeHtml(sub.postcode) : ''}</div>
+              <div class="item-meta">${visitCount} confirmed future/loaded visits</div>
+            </div>
+            <div class="item-actions">
+              ${statusPill(sub.status)}
+              <button class="btn btn-small" type="button" onclick="openSubscriptionDialog('${sub.id}')">Edit</button>
+              ${sub.status === 'active' ? `<button class="btn btn-small" type="button" onclick="addVisit('${sub.id}')">Add Visit</button>` : ''}
+              ${sub.status === 'active' ? `<button class="btn btn-small btn-danger" type="button" onclick="cancelSubscription('${sub.id}')">Cancel Plan</button>` : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderCustomers() {
+      const el = document.getElementById('customersList');
+      document.getElementById('customerCount').textContent = `${state.customers.length || 0} customers`;
+      if (!state.customers.length) {
+        el.innerHTML = '<div class="empty">No customers yet.</div>';
+        return;
+      }
+      el.innerHTML = state.customers.slice(0, 20).map(customer => `
         <article class="item">
           <div>
-            <div class="item-title">${escapeHtml(sub.name)} · ${escapeHtml(sub.vehicle || 'Vehicle not set')}</div>
-            <div class="item-meta">Started ${escapeHtml(sub.date_display)} · ${escapeHtml(sub.preferred_day || 'Any day')} · ${escapeHtml(sub.preferred_time || sub.display_time)}</div>
-            <div class="item-meta">${escapeHtml(sub.phone)}${sub.email ? ' · ' + escapeHtml(sub.email) : ''}${sub.postcode ? ' · ' + escapeHtml(sub.postcode) : ''}</div>
+            <div class="item-title">${escapeHtml(customer.name || 'Unnamed customer')}</div>
+            <div class="item-meta">${escapeHtml(customer.phone || '')}${customer.email ? ' - ' + escapeHtml(customer.email) : ''}</div>
+            <div class="item-meta">${escapeHtml(customer.vehicle || 'Vehicle not set')} - Last booking ${escapeHtml(customer.last_booking_date || 'n/a')}</div>
           </div>
           <div class="item-actions">
-            ${statusPill(sub.status)}
-            ${sub.status === 'active' ? `<button class="btn btn-danger" type="button" onclick="cancelSubscription('${sub.id}')">Cancel Plan</button>` : ''}
+            <span class="pill">${Number(customer.booking_count || 0)} visits</span>
+            <span class="pill">${money(customer.total_spend)}</span>
           </div>
         </article>
       `).join('');
@@ -528,7 +1093,8 @@
             <div class="item-meta">${escapeHtml(blockout.reason)}</div>
           </div>
           <div class="item-actions">
-            <button class="btn btn-danger" type="button" onclick="deleteBlockout('${blockout.id}')">Remove</button>
+            <button class="btn btn-small" type="button" onclick="editBlockout('${blockout.id}')">Edit</button>
+            <button class="btn btn-small btn-danger" type="button" onclick="deleteBlockout('${blockout.id}')">Remove</button>
           </div>
         </article>
       `).join('');
@@ -551,6 +1117,140 @@
       `).join('');
     }
 
+    function resetFilters() {
+      document.getElementById('bookingSearch').value = '';
+      document.getElementById('statusFilter').value = 'confirmed';
+      document.getElementById('typeFilter').value = 'all';
+      document.getElementById('dateFilter').value = '';
+      renderBookings();
+    }
+
+    function refreshCreateEstimate(forceEnd = false) {
+      const serviceId = document.getElementById('createService').value || (oneOffServices()[0] && oneOffServices()[0].id);
+      const addonIds = selectedAddons('createAddons');
+      const service = serviceById(serviceId);
+      const duration = durationFor(serviceId, addonIds);
+      const total = priceFor(serviceId, addonIds);
+      document.getElementById('createEstimate').textContent = `${duration} min - ${money(total)}`;
+      document.getElementById('createServicePrice').value = Number(service.price || 0);
+      if (!createTotalManual) document.getElementById('createTotalPrice').value = total;
+      if (forceEnd || !createEndManual) {
+        document.getElementById('createEndTime').value = addMinutes(document.getElementById('createTime').value, duration);
+      }
+    }
+
+    function refreshEditEstimate(forceEnd = false) {
+      const serviceId = document.getElementById('editService').value;
+      const addonIds = selectedAddons('editAddons');
+      const duration = durationFor(serviceId, addonIds);
+      const total = priceFor(serviceId, addonIds);
+      document.getElementById('editEstimate').textContent = `${duration} min - ${money(total)}`;
+      if (!editTotalManual) document.getElementById('editTotalPrice').value = total;
+      if (forceEnd || !editEndManual) {
+        document.getElementById('editEndTime').value = addMinutes(document.getElementById('editTime').value, duration);
+      }
+    }
+
+    function bookingPayloadFrom(prefix) {
+      const serviceSelect = document.getElementById(`${prefix}Service`);
+      const service = serviceById(serviceSelect.value);
+      const addonIds = selectedAddons(`${prefix}Addons`);
+      return {
+        service: service.id,
+        service_name: service.name,
+        service_price: Number(document.getElementById(`${prefix}ServicePrice`).value || service.price || 0),
+        addons: addonIds,
+        addon_names: addonIds.map(id => addonById(id).name),
+        total_price: Number(document.getElementById(`${prefix}TotalPrice`).value || 0),
+        date: document.getElementById(`${prefix}Date`).value,
+        time: document.getElementById(`${prefix}Time`).value,
+        end_time: document.getElementById(`${prefix}EndTime`).value,
+      };
+    }
+
+    document.getElementById('createBookingForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      try {
+        const payload = {
+          ...bookingPayloadFrom('create'),
+          name: document.getElementById('createBookingName').value,
+          phone: document.getElementById('createBookingPhone').value,
+          email: document.getElementById('createBookingEmail').value,
+          vehicle: document.getElementById('createBookingVehicle').value,
+          location: document.getElementById('createBookingLocation').value,
+          notes: document.getElementById('createBookingNotes').value,
+        };
+        await api('/api/admin/bookings', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        event.target.reset();
+        createEndManual = false;
+        createTotalManual = false;
+        document.getElementById('createTime').value = '09:00';
+        document.getElementById('createBookingLocation').value = 'Mobile - Customer Location';
+        await loadState();
+        setStatus('Booking created.', 'ok');
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    });
+
+    function openBookingDialog(id) {
+      const booking = state.bookings.find(item => item.id === id);
+      if (!booking) return;
+      editEndManual = false;
+      editTotalManual = true;
+      document.getElementById('editBookingId').value = booking.id;
+      document.getElementById('editService').value = booking.service;
+      document.getElementById('editDate').value = booking.date;
+      document.getElementById('editTime').value = booking.time;
+      document.getElementById('editEndTime').value = booking.end_time;
+      document.getElementById('editServicePrice').value = booking.service_price;
+      document.getElementById('editTotalPrice').value = booking.total_price;
+      document.getElementById('editName').value = booking.name;
+      document.getElementById('editPhone').value = booking.phone;
+      document.getElementById('editEmail').value = booking.email;
+      document.getElementById('editVehicle').value = booking.vehicle;
+      document.getElementById('editLocation').value = booking.location;
+      document.getElementById('editNotes').value = booking.notes;
+      document.getElementById('editStatusLabel').textContent = booking.status;
+      document.querySelectorAll('#editAddons input').forEach(input => {
+        input.checked = booking.addons.includes(input.value);
+      });
+      refreshEditEstimate(false);
+      bookingDialog.showModal();
+    }
+
+    function closeBookingDialog() {
+      bookingDialog.close();
+    }
+
+    document.getElementById('editBookingForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const id = document.getElementById('editBookingId').value;
+      try {
+        const payload = {
+          ...bookingPayloadFrom('edit'),
+          name: document.getElementById('editName').value,
+          phone: document.getElementById('editPhone').value,
+          email: document.getElementById('editEmail').value,
+          vehicle: document.getElementById('editVehicle').value,
+          location: document.getElementById('editLocation').value,
+          notes: document.getElementById('editNotes').value,
+        };
+        await api(`/api/admin/bookings/${id}`, {
+          method: 'PATCH',
+          body: JSON.stringify(payload),
+        });
+        closeBookingDialog();
+        await loadState();
+        setStatus('Booking updated.', 'ok');
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    });
+
     async function cancelBooking(id) {
       const reason = prompt('Reason for cancellation?', 'Cancelled by admin') || '';
       try {
@@ -559,6 +1259,102 @@
           body: JSON.stringify({ reason }),
         });
         await loadState();
+        setStatus('Booking cancelled.', 'ok');
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    }
+
+    async function restoreBooking(id) {
+      try {
+        await api(`/api/admin/bookings/${id}/restore`, { method: 'PATCH', body: JSON.stringify({}) });
+        await loadState();
+        setStatus('Booking restored.', 'ok');
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    }
+
+    async function completeBooking(id) {
+      try {
+        await api(`/api/admin/bookings/${id}/complete`, { method: 'PATCH', body: JSON.stringify({}) });
+        await loadState();
+        setStatus('Booking completed.', 'ok');
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    }
+
+    function openSubscriptionDialog(id) {
+      const sub = state.subscriptions.find(item => item.id === id);
+      if (!sub) return;
+      document.getElementById('editSubscriptionId').value = sub.id;
+      document.getElementById('subName').value = sub.name;
+      document.getElementById('subPhone').value = sub.phone;
+      document.getElementById('subEmail').value = sub.email;
+      document.getElementById('subVehicle').value = sub.vehicle;
+      document.getElementById('subReg').value = sub.vehicle_reg;
+      document.getElementById('subColour').value = sub.vehicle_colour;
+      document.getElementById('subCondition').value = sub.condition;
+      document.getElementById('subPreferredDay').value = sub.preferred_day || '';
+      document.getElementById('subPreferredTime').value = sub.preferred_time || '';
+      document.getElementById('subStartDate').value = sub.start_date;
+      document.getElementById('subVisitTime').value = sub.visit_time;
+      document.getElementById('subVisitEndTime').value = sub.visit_end_time;
+      document.getElementById('subPostcode').value = sub.postcode;
+      document.getElementById('subAddress').value = sub.address;
+      document.getElementById('subNotes').value = sub.notes;
+      document.getElementById('subRegenerate').checked = false;
+      subscriptionDialog.showModal();
+    }
+
+    function closeSubscriptionDialog() {
+      subscriptionDialog.close();
+    }
+
+    document.getElementById('editSubscriptionForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const id = document.getElementById('editSubscriptionId').value;
+      try {
+        await api(`/api/admin/subscriptions/${id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            name: document.getElementById('subName').value,
+            phone: document.getElementById('subPhone').value,
+            email: document.getElementById('subEmail').value,
+            vehicle: document.getElementById('subVehicle').value,
+            vehicle_reg: document.getElementById('subReg').value,
+            vehicle_colour: document.getElementById('subColour').value,
+            condition: document.getElementById('subCondition').value,
+            preferred_day: document.getElementById('subPreferredDay').value,
+            preferred_time: document.getElementById('subPreferredTime').value,
+            start_date: document.getElementById('subStartDate').value,
+            visit_time: document.getElementById('subVisitTime').value,
+            visit_end_time: document.getElementById('subVisitEndTime').value,
+            postcode: document.getElementById('subPostcode').value,
+            address: document.getElementById('subAddress').value,
+            notes: document.getElementById('subNotes').value,
+            regenerate_future_visits: document.getElementById('subRegenerate').checked,
+          }),
+        });
+        closeSubscriptionDialog();
+        await loadState();
+        setStatus('Subscription updated.', 'ok');
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    });
+
+    async function addVisit(id) {
+      const date = prompt('Visit date in YYYY-MM-DD. Leave blank to auto-schedule next visit.', '') || '';
+      const time = date ? (prompt('Start time in HH:MM. Leave blank for the plan time.', '') || '') : '';
+      try {
+        await api(`/api/admin/subscriptions/${id}/visits`, {
+          method: 'POST',
+          body: JSON.stringify({ date, time }),
+        });
+        await loadState();
+        setStatus('Subscription visit added.', 'ok');
       } catch (error) {
         setStatus(error.message, 'error');
       }
@@ -572,41 +1368,63 @@
           body: JSON.stringify({ reason }),
         });
         await loadState();
+        setStatus('Subscription cancelled.', 'ok');
       } catch (error) {
         setStatus(error.message, 'error');
       }
     }
+
+    function editBlockout(id) {
+      const blockout = state.blockouts.find(item => item.id === id);
+      if (!blockout) return;
+      document.getElementById('editingBlockoutId').value = blockout.id;
+      document.getElementById('blockDate').value = blockout.date;
+      document.getElementById('blockStart').value = blockout.start_time;
+      document.getElementById('blockEnd').value = blockout.end_time;
+      document.getElementById('blockReason').value = blockout.reason;
+      document.getElementById('blockoutSubmit').textContent = 'Save Block';
+    }
+
+    function resetBlockoutForm() {
+      document.getElementById('editingBlockoutId').value = '';
+      document.getElementById('blockoutForm').reset();
+      document.getElementById('blockStart').value = '09:00';
+      document.getElementById('blockEnd').value = '12:00';
+      document.getElementById('blockReason').value = 'Unavailable';
+      document.getElementById('blockoutSubmit').textContent = 'Add Block';
+    }
+
+    document.getElementById('blockoutForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const id = document.getElementById('editingBlockoutId').value;
+      const payload = {
+        date: document.getElementById('blockDate').value,
+        start_time: document.getElementById('blockStart').value,
+        end_time: document.getElementById('blockEnd').value,
+        reason: document.getElementById('blockReason').value,
+      };
+      try {
+        await api(id ? `/api/admin/blockouts/${id}` : '/api/admin/blockouts', {
+          method: id ? 'PUT' : 'POST',
+          body: JSON.stringify(payload),
+        });
+        resetBlockoutForm();
+        await loadState();
+        setStatus(id ? 'Blockout updated.' : 'Blockout added.', 'ok');
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    });
 
     async function deleteBlockout(id) {
       try {
         await api(`/api/admin/blockouts/${id}`, { method: 'DELETE' });
         await loadState();
+        setStatus('Blockout removed.', 'ok');
       } catch (error) {
         setStatus(error.message, 'error');
       }
     }
-
-    document.getElementById('blockoutForm').addEventListener('submit', async event => {
-      event.preventDefault();
-      try {
-        await api('/api/admin/blockouts', {
-          method: 'POST',
-          body: JSON.stringify({
-            date: document.getElementById('blockDate').value,
-            start_time: document.getElementById('blockStart').value,
-            end_time: document.getElementById('blockEnd').value,
-            reason: document.getElementById('blockReason').value,
-          }),
-        });
-        event.target.reset();
-        document.getElementById('blockStart').value = '09:00';
-        document.getElementById('blockEnd').value = '12:00';
-        document.getElementById('blockReason').value = 'Unavailable';
-        await loadState();
-      } catch (error) {
-        setStatus(error.message, 'error');
-      }
-    });
 
     async function saveHours() {
       const hours = [...document.querySelectorAll('.hour-row')].map(row => ({
@@ -621,6 +1439,7 @@
           body: JSON.stringify({ hours }),
         });
         await loadState();
+        setStatus('Working hours saved.', 'ok');
       } catch (error) {
         setStatus(error.message, 'error');
       }
@@ -633,6 +1452,31 @@
       setStatus('Calendar link copied.', 'ok');
     }
 
+    document.getElementById('bookingSearch').addEventListener('input', renderBookings);
+    document.getElementById('statusFilter').addEventListener('change', renderBookings);
+    document.getElementById('typeFilter').addEventListener('change', renderBookings);
+    document.getElementById('dateFilter').addEventListener('change', renderBookings);
+    document.getElementById('createService').addEventListener('change', () => {
+      createEndManual = false;
+      createTotalManual = false;
+      refreshCreateEstimate(true);
+    });
+    document.getElementById('createTime').addEventListener('change', () => refreshCreateEstimate(true));
+    document.getElementById('createEndTime').addEventListener('input', () => { createEndManual = true; });
+    document.getElementById('createTotalPrice').addEventListener('input', () => { createTotalManual = true; });
+    document.getElementById('editService').addEventListener('change', () => {
+      editEndManual = false;
+      editTotalManual = false;
+      const service = serviceById(document.getElementById('editService').value);
+      document.getElementById('editServicePrice').value = service.price || 0;
+      refreshEditEstimate(true);
+    });
+    document.getElementById('editTime').addEventListener('change', () => refreshEditEstimate(true));
+    document.getElementById('editEndTime').addEventListener('input', () => { editEndManual = true; });
+    document.getElementById('editTotalPrice').addEventListener('input', () => { editTotalManual = true; });
+
+    renderCatalogControls();
+    refreshCreateEstimate(true);
     if (token()) {
       loadState();
     }

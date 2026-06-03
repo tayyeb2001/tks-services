@@ -1,8 +1,11 @@
 # TKS Services - Mobile Valeting & Detailing
 
 Professional mobile valeting website with:
-- Online booking system backed by FastAPI and SQLite
-- Admin dashboard for cancellations, blocked slots, working hours, and subscriptions
+- Online booking system backed by FastAPI with SQLite locally and Postgres/Supabase in production
+- Admin dashboard for creating, editing, rescheduling, completing, restoring, and cancelling bookings
+- Subscription management for customer details, future visit generation, and plan cancellation
+- Working-hours and blocked-slot management with clash checks
+- Lightweight customer history from booking records
 - iPhone Calendar sync through a private `.ics` subscription feed
 - Monthly subscription onboarding flow
 - Add-on cart system
