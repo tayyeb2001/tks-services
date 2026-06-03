@@ -160,12 +160,80 @@
       padding: 0;
     }
 
+    .auth-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 14px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(154, 120, 79, 0.12), transparent 34%),
+        var(--soft);
+    }
+
+    .auth-card {
+      width: min(430px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .auth-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: linear-gradient(145deg, #cfaa71, #85633d);
+      color: #15110b;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .auth-title {
+      font-size: 1.15rem;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .auth-caption {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .auth-card .status {
+      text-align: left;
+    }
+
+    .auth-pending .admin-shell,
+    .auth-required .admin-shell {
+      display: none;
+    }
+
+    .auth-ready .auth-screen {
+      display: none;
+    }
+
+    .auth-pending #adminLoginForm {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
     .topbar {
       position: sticky;
       top: 0;
       z-index: 20;
       display: grid;
-      grid-template-columns: minmax(240px, 1fr) minmax(420px, 760px);
+      grid-template-columns: minmax(240px, 1fr) auto;
       align-items: center;
       gap: 20px;
       min-height: 72px;
@@ -189,9 +257,34 @@
 
     .login {
       display: grid;
-      grid-template-columns: minmax(190px, 1fr) minmax(150px, 220px) auto auto auto;
-      gap: 8px;
+      gap: 10px;
+    }
+
+    .session-tools {
+      display: grid;
+      justify-items: end;
+      gap: 6px;
+    }
+
+    .topbar-actions {
+      display: flex;
       align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .session-pill {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 7px 10px;
+      color: var(--muted);
+      background: #fbf8f3;
+      font-size: 0.78rem;
+      font-weight: 700;
     }
 
     .status {
@@ -724,6 +817,10 @@
         text-align: left;
       }
 
+      .session-tools {
+        justify-items: start;
+      }
+
       .stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -751,14 +848,37 @@
 
       .panel-actions,
       .row-actions,
-      .mini-row-actions {
+      .mini-row-actions,
+      .topbar-actions {
         justify-content: flex-start;
+      }
+
+      .auth-card {
+        padding: 22px;
       }
     }
   </style>
 </head>
-<body>
-  <div class="admin-shell">
+<body class="auth-pending">
+  <section class="auth-screen" aria-labelledby="authTitle">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-mark">TKS</div>
+        <div>
+          <h1 id="authTitle" class="auth-title">TKS Booking Admin</h1>
+          <p class="auth-caption">Sign in to manage bookings and availability.</p>
+        </div>
+      </div>
+      <form id="adminLoginForm" class="login">
+        <input id="adminEmailInput" class="input" type="email" autocomplete="username" value="Tksservices1@outlook.com" placeholder="Admin email">
+        <input id="adminPasswordInput" class="input" type="password" autocomplete="current-password" placeholder="Password">
+        <button class="btn btn-primary" type="submit">Sign In</button>
+      </form>
+      <p id="status" class="status"></p>
+    </div>
+  </section>
+
+  <div class="admin-shell" aria-hidden="true">
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-mark">TKS</div>
@@ -806,15 +926,13 @@
           <h1>TKS Booking Admin</h1>
           <p class="topbar-kicker">Mobile valeting schedule and subscription management</p>
         </div>
-        <div>
-          <form id="adminLoginForm" class="login">
-            <input id="adminEmailInput" class="input" type="email" autocomplete="username" value="Tksservices1@outlook.com" placeholder="Admin email">
-            <input id="adminPasswordInput" class="input" type="password" autocomplete="current-password" placeholder="Password">
-            <button class="btn btn-primary" type="submit">Sign In</button>
+        <div class="session-tools">
+          <div class="topbar-actions">
+            <span id="adminUserLabel" class="session-pill"></span>
             <button class="btn" type="button" onclick="loadState()">Refresh</button>
             <button class="btn" type="button" onclick="logoutAdmin()">Logout</button>
-          </form>
-          <p id="status" class="status"></p>
+          </div>
+          <p id="adminStatus" class="status"></p>
         </div>
       </header>
 
@@ -1174,6 +1292,10 @@
     const adminEmailInput = document.getElementById('adminEmailInput');
     const adminPasswordInput = document.getElementById('adminPasswordInput');
     const statusEl = document.getElementById('status');
+    const adminStatusEl = document.getElementById('adminStatus');
+    const adminShell = document.querySelector('.admin-shell');
+    const authScreen = document.querySelector('.auth-screen');
+    const adminUserLabel = document.getElementById('adminUserLabel');
     const bookingDialog = document.getElementById('bookingDialog');
     const subscriptionDialog = document.getElementById('subscriptionDialog');
     const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -1225,9 +1347,31 @@
       return date.toISOString().slice(0, 10);
     }
 
+    function setAuthMode(mode) {
+      document.body.classList.remove('auth-pending', 'auth-required', 'auth-ready');
+      document.body.classList.add(mode);
+      const authenticated = mode === 'auth-ready';
+      adminShell.setAttribute('aria-hidden', String(!authenticated));
+      authScreen.setAttribute('aria-hidden', String(authenticated));
+    }
+
+    function resetAdminState() {
+      state.bookings = [];
+      state.subscriptions = [];
+      state.blockouts = [];
+      state.working_hours = [];
+      state.customers = [];
+      state.stats = {};
+      state.settings = {};
+      adminUserLabel.textContent = '';
+      renderAll();
+    }
+
     function setStatus(message, tone) {
-      statusEl.textContent = message || '';
-      statusEl.style.color = tone === 'error' ? 'var(--red)' : tone === 'ok' ? 'var(--green)' : 'var(--muted)';
+      [statusEl, adminStatusEl].forEach(node => {
+        node.textContent = message || '';
+        node.style.color = tone === 'error' ? 'var(--red)' : tone === 'ok' ? 'var(--green)' : 'var(--muted)';
+      });
     }
 
     function escapeHtml(value) {
@@ -1311,9 +1455,10 @@
         });
         localStorage.setItem('tksAdminEmail', adminEmailInput.value.trim());
         adminPasswordInput.value = '';
-        setStatus(`Signed in as ${data.username}.`, 'ok');
+        adminUserLabel.textContent = data.username || adminEmailInput.value.trim();
         await loadState();
       } catch (error) {
+        setAuthMode('auth-required');
         setStatus(error.message, 'error');
       }
     }
@@ -1327,26 +1472,27 @@
       } catch (_) {
         // Already logged out or session expired.
       }
+      setAuthMode('auth-required');
       setStatus('Signed out.', 'ok');
-      state.bookings = [];
-      state.subscriptions = [];
-      state.blockouts = [];
-      state.working_hours = [];
-      state.customers = [];
-      state.stats = {};
-      renderAll();
+      resetAdminState();
+      adminPasswordInput.focus();
     }
 
     async function checkAdminSession() {
+      setAuthMode('auth-pending');
       setStatus('Checking admin session...');
       try {
         const data = await api('/api/admin/session');
         if (data.authenticated) {
           await loadState();
         } else {
+          setAuthMode('auth-required');
+          resetAdminState();
           setStatus('Sign in to manage bookings.');
+          adminPasswordInput.focus();
         }
       } catch (error) {
+        setAuthMode('auth-required');
         setStatus(error.message, 'error');
       }
     }
@@ -1358,9 +1504,15 @@
         Object.assign(state, data);
         state.catalog = data.catalog || state.catalog;
         renderAll();
+        adminUserLabel.textContent = data.settings.admin_username || data.settings.business_email || '';
+        setAuthMode('auth-ready');
         setStatus('Admin loaded.', 'ok');
+        return true;
       } catch (error) {
+        setAuthMode('auth-required');
+        resetAdminState();
         setStatus(error.message, 'error');
+        return false;
       }
     }
 
