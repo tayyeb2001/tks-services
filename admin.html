@@ -75,6 +75,7 @@
       position: sticky;
       top: 0;
       height: 100vh;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       background: var(--side);
@@ -118,6 +119,7 @@
     .side-nav {
       display: grid;
       gap: 3px;
+      min-width: 0;
       padding: 16px 0;
     }
 
@@ -163,7 +165,7 @@
       top: 0;
       z-index: 20;
       display: grid;
-      grid-template-columns: minmax(240px, 1fr) minmax(300px, 520px);
+      grid-template-columns: minmax(240px, 1fr) minmax(420px, 760px);
       align-items: center;
       gap: 20px;
       min-height: 72px;
@@ -187,7 +189,7 @@
 
     .login {
       display: grid;
-      grid-template-columns: minmax(160px, 1fr) auto auto;
+      grid-template-columns: minmax(190px, 1fr) minmax(150px, 220px) auto auto auto;
       gap: 8px;
       align-items: center;
     }
@@ -681,7 +683,7 @@
 
     @media (max-width: 1180px) {
       .admin-shell {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
 
       .sidebar {
@@ -699,6 +701,7 @@
         grid-auto-flow: column;
         grid-auto-columns: max-content;
         overflow-x: auto;
+        width: 100%;
         padding: 8px 0 4px;
       }
 
@@ -804,11 +807,13 @@
           <p class="topbar-kicker">Mobile valeting schedule and subscription management</p>
         </div>
         <div>
-          <div class="login">
-            <input id="tokenInput" class="input" type="password" autocomplete="current-password" placeholder="Admin token">
-            <button class="btn btn-primary" type="button" onclick="saveToken()">Load</button>
+          <form id="adminLoginForm" class="login">
+            <input id="adminEmailInput" class="input" type="email" autocomplete="username" value="Tksservices1@outlook.com" placeholder="Admin email">
+            <input id="adminPasswordInput" class="input" type="password" autocomplete="current-password" placeholder="Password">
+            <button class="btn btn-primary" type="submit">Sign In</button>
             <button class="btn" type="button" onclick="loadState()">Refresh</button>
-          </div>
+            <button class="btn" type="button" onclick="logoutAdmin()">Logout</button>
+          </form>
           <p id="status" class="status"></p>
         </div>
       </header>
@@ -851,7 +856,7 @@
                 <input id="dateFilter" class="input" type="date">
               </div>
               <div id="bookingsList">
-                <div class="empty">Enter the admin token to load bookings.</div>
+                <div class="empty">Sign in to load bookings.</div>
               </div>
             </section>
 
@@ -1165,7 +1170,9 @@
       { id: 'tar-removal', name: 'Tar Removal', price: 10, duration: 20 },
     ];
 
-    const tokenInput = document.getElementById('tokenInput');
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminEmailInput = document.getElementById('adminEmailInput');
+    const adminPasswordInput = document.getElementById('adminPasswordInput');
     const statusEl = document.getElementById('status');
     const bookingDialog = document.getElementById('bookingDialog');
     const subscriptionDialog = document.getElementById('subscriptionDialog');
@@ -1187,7 +1194,7 @@
     let editEndManual = false;
     let editTotalManual = false;
 
-    tokenInput.value = localStorage.getItem('tksAdminToken') || '';
+    adminEmailInput.value = localStorage.getItem('tksAdminEmail') || adminEmailInput.value;
     document.getElementById('createDate').min = todayInputValue();
     document.getElementById('blockDate').min = todayInputValue();
 
@@ -1216,10 +1223,6 @@
       const date = new Date();
       date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
       return date.toISOString().slice(0, 10);
-    }
-
-    function token() {
-      return tokenInput.value.trim();
     }
 
     function setStatus(message, tone) {
@@ -1285,10 +1288,9 @@
     async function api(path, options = {}) {
       const headers = {
         'Content-Type': 'application/json',
-        'X-Admin-Token': token(),
         ...(options.headers || {}),
       };
-      const res = await fetch(path, { ...options, headers });
+      const res = await fetch(path, { ...options, headers, credentials: 'same-origin' });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         throw new Error(data.detail || 'Request failed');
@@ -1296,16 +1298,60 @@
       return data;
     }
 
-    async function saveToken() {
-      localStorage.setItem('tksAdminToken', token());
-      await loadState();
+    async function loginAdmin(event) {
+      event.preventDefault();
+      setStatus('Signing in...');
+      try {
+        const data = await api('/api/admin/login', {
+          method: 'POST',
+          body: JSON.stringify({
+            username: adminEmailInput.value.trim(),
+            password: adminPasswordInput.value,
+          }),
+        });
+        localStorage.setItem('tksAdminEmail', adminEmailInput.value.trim());
+        adminPasswordInput.value = '';
+        setStatus(`Signed in as ${data.username}.`, 'ok');
+        await loadState();
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
+    }
+
+    async function logoutAdmin() {
+      try {
+        await api('/api/admin/logout', {
+          method: 'POST',
+          body: JSON.stringify({}),
+        });
+      } catch (_) {
+        // Already logged out or session expired.
+      }
+      setStatus('Signed out.', 'ok');
+      state.bookings = [];
+      state.subscriptions = [];
+      state.blockouts = [];
+      state.working_hours = [];
+      state.customers = [];
+      state.stats = {};
+      renderAll();
+    }
+
+    async function checkAdminSession() {
+      setStatus('Checking admin session...');
+      try {
+        const data = await api('/api/admin/session');
+        if (data.authenticated) {
+          await loadState();
+        } else {
+          setStatus('Sign in to manage bookings.');
+        }
+      } catch (error) {
+        setStatus(error.message, 'error');
+      }
     }
 
     async function loadState() {
-      if (!token()) {
-        setStatus('Enter the admin token.', 'error');
-        return;
-      }
       setStatus('Loading admin data...');
       try {
         const data = await api('/api/admin/state');
@@ -1366,9 +1412,6 @@
       document.getElementById('timezonePill').textContent = state.settings.timezone || 'Europe/London';
       const feedPath = state.settings.calendar_feed_path || '';
       document.getElementById('feedUrl').value = feedPath ? `${window.location.origin}${feedPath}` : '';
-      if (state.settings.default_admin_token) {
-        setStatus('Using default admin token. Set ADMIN_TOKEN before deployment.', 'error');
-      }
     }
 
     function statusPill(status) {
@@ -1961,12 +2004,11 @@
     document.getElementById('editTime').addEventListener('change', () => refreshEditEstimate(true));
     document.getElementById('editEndTime').addEventListener('input', () => { editEndManual = true; });
     document.getElementById('editTotalPrice').addEventListener('input', () => { editTotalManual = true; });
+    adminLoginForm.addEventListener('submit', loginAdmin);
 
     renderCatalogControls();
     refreshCreateEstimate(true);
-    if (token()) {
-      loadState();
-    }
+    checkAdminSession();
   </script>
 </body>
 </html>

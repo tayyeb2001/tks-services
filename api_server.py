@@ -3,9 +3,14 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
 import calendar
+import hashlib
+import hmac
 import json
 import os
+import secrets
 import sqlite3
 import uuid
 from contextlib import contextmanager
@@ -15,7 +20,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 from zoneinfo import ZoneInfo
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
+from fastapi import Cookie, Depends, FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -35,9 +40,13 @@ POSTGRES_DSN = (
 DB_BACKEND = "postgres" if POSTGRES_DSN else "sqlite"
 LOCAL_TZ_NAME = os.getenv("TKS_TIMEZONE", "Europe/London")
 LOCAL_TZ = ZoneInfo(LOCAL_TZ_NAME)
-ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "change-me")
-CALENDAR_TOKEN = os.getenv("CALENDAR_TOKEN", ADMIN_TOKEN)
 BUSINESS_EMAIL = os.getenv("BUSINESS_EMAIL", "Tksservices1@outlook.com")
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", BUSINESS_EMAIL).strip().lower()
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
+ADMIN_SESSION_SECRET = os.getenv("ADMIN_SESSION_SECRET") or "local-dev-admin-session-secret"
+ADMIN_SESSION_COOKIE = "tks_admin_session"
+ADMIN_SESSION_TTL_SECONDS = int(os.getenv("ADMIN_SESSION_TTL_SECONDS", str(12 * 60 * 60)))
+CALENDAR_TOKEN = os.getenv("CALENDAR_TOKEN") or ADMIN_SESSION_SECRET
 
 SLOT_INTERVAL = 30
 SUBSCRIPTION_VISITS_TO_GENERATE = int(os.getenv("SUBSCRIPTION_VISITS_TO_GENERATE", "12"))
@@ -123,6 +132,11 @@ class BookingRequest(BaseModel):
     notes: str = ""
     location: str = ""
     subscription: Dict[str, Any] = Field(default_factory=dict)
+
+
+class AdminLoginRequest(BaseModel):
+    username: str
+    password: str
 
 
 class BookingUpdateRequest(BaseModel):
@@ -357,13 +371,51 @@ def init_db() -> None:
 init_db()
 
 
+def sign_admin_session(username: str, expires_at: int) -> str:
+    message = f"{username}|{expires_at}"
+    signature = hmac.new(
+        ADMIN_SESSION_SECRET.encode("utf-8"),
+        message.encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+    raw = f"{message}|{signature}".encode("utf-8")
+    return base64.urlsafe_b64encode(raw).decode("ascii")
+
+
+def verify_admin_session(session_value: str) -> bool:
+    if not session_value:
+        return False
+    try:
+        decoded = base64.urlsafe_b64decode(session_value.encode("ascii")).decode("utf-8")
+        username, expires_at_raw, signature = decoded.split("|", 2)
+        expires_at = int(expires_at_raw)
+    except (ValueError, UnicodeDecodeError, binascii.Error):
+        return False
+
+    if username.lower() != ADMIN_USERNAME:
+        return False
+    if expires_at < int(datetime.now(timezone.utc).timestamp()):
+        return False
+
+    message = f"{username}|{expires_at}"
+    expected_signature = hmac.new(
+        ADMIN_SESSION_SECRET.encode("utf-8"),
+        message.encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+    return secrets.compare_digest(signature, expected_signature)
+
+
+def secure_cookie(request: Request) -> bool:
+    return request.url.scheme == "https" or bool(os.getenv("VERCEL"))
+
+
 def require_admin(
-    x_admin_token: str = Header(default=""),
-    token: str = Query(default=""),
+    request: Request,
+    admin_session: str = Cookie(default="", alias=ADMIN_SESSION_COOKIE),
 ) -> None:
-    supplied = x_admin_token or token
-    if not supplied or supplied != ADMIN_TOKEN:
-        raise HTTPException(status_code=401, detail="Invalid admin token")
+    if not verify_admin_session(admin_session):
+        raise HTTPException(status_code=401, detail="Sign in with admin email and password")
 
 
 def require_calendar_token(token: str = Query(default="")) -> None:
@@ -1061,9 +1113,53 @@ async def head_admin() -> Response:
     return Response(status_code=200)
 
 
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon() -> Response:
+    return Response(status_code=204)
+
+
 @app.get("/api/health")
 async def health() -> Dict[str, str]:
     return {"status": "ok", "timezone": LOCAL_TZ_NAME, "database": DB_BACKEND}
+
+
+@app.post("/api/admin/login")
+async def admin_login(payload: AdminLoginRequest, request: Request, response: Response) -> Dict[str, Any]:
+    if not ADMIN_PASSWORD:
+        raise HTTPException(status_code=500, detail="Admin password is not configured")
+
+    username = payload.username.strip().lower()
+    password = payload.password
+    valid_username = secrets.compare_digest(username, ADMIN_USERNAME)
+    valid_password = secrets.compare_digest(password, ADMIN_PASSWORD)
+    if not valid_username or not valid_password:
+        raise HTTPException(status_code=401, detail="Invalid admin email or password")
+
+    expires_at = int(datetime.now(timezone.utc).timestamp()) + ADMIN_SESSION_TTL_SECONDS
+    response.set_cookie(
+        key=ADMIN_SESSION_COOKIE,
+        value=sign_admin_session(ADMIN_USERNAME, expires_at),
+        max_age=ADMIN_SESSION_TTL_SECONDS,
+        httponly=True,
+        secure=secure_cookie(request),
+        samesite="lax",
+        path="/",
+    )
+    return {"success": True, "username": ADMIN_USERNAME}
+
+
+@app.post("/api/admin/logout")
+async def admin_logout(response: Response) -> Dict[str, Any]:
+    response.delete_cookie(ADMIN_SESSION_COOKIE, path="/")
+    return {"success": True}
+
+
+@app.get("/api/admin/session")
+async def admin_session_status(
+    admin_session: str = Cookie(default="", alias=ADMIN_SESSION_COOKIE),
+) -> Dict[str, Any]:
+    authenticated = verify_admin_session(admin_session)
+    return {"authenticated": authenticated, "username": ADMIN_USERNAME if authenticated else ""}
 
 
 @app.get("/api/services")
@@ -1277,8 +1373,8 @@ async def admin_state(request: Request) -> Dict[str, Any]:
             "timezone": LOCAL_TZ_NAME,
             "database": DB_BACKEND,
             "business_email": BUSINESS_EMAIL,
+            "admin_username": ADMIN_USERNAME,
             "calendar_feed_path": f"/calendar/tks-services.ics?token={CALENDAR_TOKEN}",
-            "default_admin_token": ADMIN_TOKEN == "change-me",
             "base_url": str(request.base_url).rstrip("/"),
         },
     }
@@ -1892,6 +1988,6 @@ async def calendar_feed() -> Response:
 if __name__ == "__main__":
     import uvicorn
 
-    if ADMIN_TOKEN == "change-me":
-        print("WARNING: ADMIN_TOKEN is using the local default. Set ADMIN_TOKEN before deployment.")
+    if not ADMIN_PASSWORD:
+        print("WARNING: ADMIN_PASSWORD is not set. Admin login will not work until it is configured.")
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", "8000")))

@@ -18,7 +18,7 @@ Professional mobile valeting website with:
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-ADMIN_TOKEN="choose-a-secret-token" CALENDAR_TOKEN="choose-a-calendar-token" python api_server.py
+ADMIN_USERNAME="Tksservices1@outlook.com" ADMIN_PASSWORD="choose-a-password" CALENDAR_TOKEN="choose-a-calendar-token" python api_server.py
 ```
 
 Open:
@@ -40,7 +40,9 @@ When a Postgres URL is present, the app creates and uses the production Postgres
 
 Set these environment variables before deployment:
 
-- `ADMIN_TOKEN`: password/token used by `/admin`.
+- `ADMIN_USERNAME`: email used to sign in to `/admin`; defaults to `BUSINESS_EMAIL`.
+- `ADMIN_PASSWORD`: password used to sign in to `/admin`.
+- `ADMIN_SESSION_SECRET`: secret used to sign the secure admin session cookie.
 - `CALENDAR_TOKEN`: private token for the iPhone calendar feed.
 - `DATABASE_URL` or `POSTGRES_URL`: Vercel Marketplace Postgres/Neon connection string.
 - `SUPABASE_DB_URL`: Supabase Postgres connection string if using Supabase instead.
@@ -51,6 +53,6 @@ In `/admin`, copy the calendar feed URL. On iPhone, go to Settings, Calendar, Ac
 
 ## Vercel
 
-Vercel detects the FastAPI app through `app.py`, which imports the main `api_server.app` instance. Add `ADMIN_TOKEN`, `CALENDAR_TOKEN`, `BUSINESS_EMAIL`, and a Postgres connection string in the Vercel project environment variables before using the admin dashboard.
+Vercel detects the FastAPI app through `app.py`, which imports the main `api_server.app` instance. Add `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, `CALENDAR_TOKEN`, `BUSINESS_EMAIL`, and a Postgres connection string in the Vercel project environment variables before using the admin dashboard.
 
 For Supabase, use the transaction pooler connection string for serverless deployments. The app disables prepared statements for Postgres connections so it can work with pooled Supabase connections.
