@@ -6,28 +6,44 @@
   <title>TKS Booking Admin</title>
   <style>
     :root {
-      --bg: #101114;
-      --panel: #181a1f;
-      --panel-2: #20232a;
-      --panel-3: #121419;
-      --line: #30343d;
-      --text: #f4f1e8;
-      --muted: #aaa59a;
-      --gold: #d7a64f;
-      --gold-2: #f0c36a;
-      --danger: #f46f6f;
-      --ok: #72d28b;
-      --blue: #7fb4ff;
-      --shadow: 0 16px 60px rgba(0, 0, 0, 0.35);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --ink: #171615;
+      --ink-2: #3f3a34;
+      --muted: #81786e;
+      --soft: #f7f5f0;
+      --surface: #fffdfa;
+      --surface-2: #f0ebe2;
+      --line: #e3dbcf;
+      --line-strong: #d3c7b7;
+      --side: #151515;
+      --side-2: #202020;
+      --gold: #9a784f;
+      --gold-2: #755a3a;
+      --green: #0f7a4f;
+      --green-bg: #e8f5ee;
+      --amber: #9b6417;
+      --amber-bg: #fff2d8;
+      --red: #b3261e;
+      --red-bg: #fde8e6;
+      --blue: #2f5f96;
+      --blue-bg: #eaf1fb;
+      --shadow: 0 16px 44px rgba(31, 25, 17, 0.08);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     * { box-sizing: border-box; }
 
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
+      min-height: 100vh;
+      background: var(--soft);
+      color: var(--ink);
+      font-family: var(--font);
       line-height: 1.5;
     }
 
@@ -44,147 +60,186 @@
       margin: 0;
     }
 
-    h1 {
-      font-size: clamp(1.7rem, 4vw, 2.5rem);
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .admin-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 258px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--side);
+      color: #f8f4ec;
+      padding: 18px 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-height: 48px;
+      padding: 0 8px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: linear-gradient(145deg, #cfaa71, #85633d);
+      color: #15110b;
+      font-weight: 900;
       letter-spacing: 0;
     }
 
-    h2 {
-      font-size: 1.05rem;
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 750;
       letter-spacing: 0;
     }
 
-    h3 {
-      font-size: 0.98rem;
-      letter-spacing: 0;
+    .brand-subtitle {
+      color: rgba(248, 244, 236, 0.58);
+      font-size: 0.72rem;
+      margin-top: 1px;
     }
 
-    .shell {
-      width: min(1380px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0 48px;
+    .side-nav {
+      display: grid;
+      gap: 3px;
+      padding: 16px 0;
+    }
+
+    .side-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 40px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      color: rgba(248, 244, 236, 0.72);
+      font-size: 0.9rem;
+      transition: background 160ms ease, color 160ms ease;
+    }
+
+    .side-link:hover,
+    .side-link.active {
+      background: rgba(154, 120, 79, 0.18);
+      color: #f7d59f;
+    }
+
+    .side-link svg {
+      width: 17px;
+      height: 17px;
+      stroke-width: 1.8;
+    }
+
+    .side-note {
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 14px 8px 2px;
+      color: rgba(248, 244, 236, 0.55);
+      font-size: 0.76rem;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 0;
     }
 
     .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
       display: grid;
-      grid-template-columns: minmax(260px, 1fr) minmax(260px, 460px);
-      align-items: start;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 18px;
+      grid-template-columns: minmax(240px, 1fr) minmax(300px, 520px);
+      align-items: center;
+      gap: 20px;
+      min-height: 72px;
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 253, 250, 0.92);
+      backdrop-filter: blur(12px);
     }
 
-    .subtle {
+    h1 {
+      font-size: 1.2rem;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .topbar-kicker {
       color: var(--muted);
-      margin-top: 6px;
+      font-size: 0.82rem;
+      margin-top: 1px;
     }
 
     .login {
       display: grid;
-      grid-template-columns: minmax(180px, 1fr) auto auto;
-      gap: 10px;
-    }
-
-    .input, .select, .textarea {
-      width: 100%;
-      color: var(--text);
-      background: #111216;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 10px 11px;
-      min-height: 42px;
-      outline: none;
-    }
-
-    .textarea {
-      resize: vertical;
-      min-height: 84px;
-    }
-
-    .input:focus, .select:focus, .textarea:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(215, 166, 79, 0.14);
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      grid-template-columns: minmax(160px, 1fr) auto auto;
       gap: 8px;
-      border-radius: 8px;
-      padding: 10px 13px;
-      min-height: 42px;
-      color: var(--text);
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      white-space: nowrap;
-    }
-
-    .btn:hover {
-      border-color: var(--gold);
-    }
-
-    .btn-primary {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: #17120a;
-      font-weight: 800;
-    }
-
-    .btn-danger {
-      color: #260909;
-      background: var(--danger);
-      border-color: var(--danger);
-      font-weight: 800;
-    }
-
-    .btn-ghost {
-      background: transparent;
-    }
-
-    .btn-small {
-      min-height: 34px;
-      padding: 7px 9px;
-      font-size: 0.88rem;
+      align-items: center;
     }
 
     .status {
-      min-height: 24px;
-      margin: 10px 0 0;
+      min-height: 19px;
+      margin-top: 6px;
       color: var(--muted);
+      font-size: 0.78rem;
       text-align: right;
+    }
+
+    .content {
+      width: min(1500px, 100%);
+      padding: 26px 28px 46px;
     }
 
     .stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 18px;
     }
 
     .stat {
-      padding: 14px;
       border: 1px solid var(--line);
-      background: var(--panel);
+      background: var(--surface);
       border-radius: 8px;
+      padding: 17px 18px;
       box-shadow: var(--shadow);
     }
 
     .stat span {
       display: block;
       color: var(--muted);
-      font-size: 0.84rem;
-      margin-bottom: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 9px;
     }
 
     .stat strong {
-      font-size: 1.6rem;
+      color: var(--gold);
+      font-size: 2rem;
       line-height: 1;
+      font-weight: 450;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.85fr);
+      grid-template-columns: minmax(0, 1.7fr) minmax(360px, 0.8fr);
       gap: 18px;
       align-items: start;
     }
@@ -195,10 +250,14 @@
     }
 
     .panel {
-      background: var(--panel);
+      overflow: hidden;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 8px;
       box-shadow: var(--shadow);
+    }
+
+    .panel-body {
       padding: 18px;
     }
 
@@ -207,7 +266,21 @@
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      margin-bottom: 14px;
+      min-height: 57px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .panel-caption {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-top: 2px;
     }
 
     .panel-actions {
@@ -219,92 +292,239 @@
 
     .filters {
       display: grid;
-      grid-template-columns: minmax(180px, 1fr) 150px 160px 150px;
-      gap: 10px;
-      margin-bottom: 14px;
+      grid-template-columns: minmax(220px, 1fr) 150px 170px 150px;
+      gap: 9px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #fbf8f3;
     }
 
-    .list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .item {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 14px;
-      padding: 13px;
+    .input, .select, .textarea {
+      width: 100%;
+      min-height: 40px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--line-strong);
       border-radius: 8px;
-      border: 1px solid var(--line);
-      background: var(--panel-3);
+      padding: 9px 11px;
+      outline: none;
+      font-size: 0.9rem;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
     }
 
-    .item-title {
-      font-weight: 800;
-      overflow-wrap: anywhere;
+    .textarea {
+      resize: vertical;
+      min-height: 86px;
     }
 
-    .item-meta {
-      color: var(--muted);
-      font-size: 0.92rem;
-      margin-top: 4px;
-      overflow-wrap: anywhere;
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(154, 120, 79, 0.14);
     }
 
-    .item-actions {
-      display: flex;
+    .input::placeholder {
+      color: #b3aaa0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       gap: 8px;
+      min-height: 40px;
+      padding: 9px 13px;
+      border-radius: 8px;
+      color: var(--ink-2);
+      background: #fff;
+      border: 1px solid var(--line-strong);
+      font-size: 0.78rem;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+
+    .btn:hover {
+      border-color: var(--gold);
+      color: var(--gold-2);
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #fffaf0;
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-2);
+      border-color: var(--gold-2);
+      color: #fffaf0;
+    }
+
+    .btn-danger {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #8f1f18;
+      border-color: #8f1f18;
+      color: #fff;
+    }
+
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn-small {
+      min-height: 34px;
+      padding: 7px 10px;
+      font-size: 0.7rem;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #5f564e;
+      border: 1px solid transparent;
+    }
+
+    .icon-button:hover {
+      background: var(--surface-2);
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    .icon-button.danger:hover {
+      background: var(--red-bg);
+      border-color: transparent;
+      color: var(--red);
+    }
+
+    .icon-button svg,
+    .btn svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 1.9;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    .admin-table th {
+      padding: 12px 18px;
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-align: left;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+      background: #fbf8f3;
+    }
+
+    .admin-table td {
+      padding: 14px 18px;
+      vertical-align: middle;
+      border-bottom: 1px solid rgba(211, 199, 183, 0.62);
+      color: var(--ink-2);
+      font-size: 0.9rem;
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .admin-table tbody tr {
+      transition: background 150ms ease;
+    }
+
+    .admin-table tbody tr:hover {
+      background: #fbf8f3;
+    }
+
+    .cell-title {
+      color: var(--ink);
+      font-weight: 760;
+      overflow-wrap: anywhere;
+    }
+
+    .cell-sub {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      overflow-wrap: anywhere;
+    }
+
+    .row-actions {
+      display: flex;
       align-items: center;
       justify-content: flex-end;
-      flex-wrap: wrap;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      white-space: nowrap;
+    }
+
+    .badge-ok {
+      color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .badge-warn {
+      color: var(--amber);
+      background: var(--amber-bg);
+    }
+
+    .badge-danger {
+      color: var(--red);
+      background: var(--red-bg);
+    }
+
+    .badge-blue {
+      color: var(--blue);
+      background: var(--blue-bg);
+    }
+
+    .badge-neutral {
+      color: var(--muted);
+      background: var(--surface-2);
     }
 
     .empty {
       color: var(--muted);
-      padding: 14px;
-      border: 1px dashed var(--line);
-      border-radius: 8px;
+      padding: 34px 18px;
       text-align: center;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: #111216;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 0.82rem;
-      white-space: nowrap;
-      text-transform: capitalize;
-    }
-
-    .pill-ok {
-      color: var(--ok);
-      border-color: rgba(114, 210, 139, 0.3);
-    }
-
-    .pill-warn {
-      color: var(--gold-2);
-      border-color: rgba(240, 195, 106, 0.3);
-    }
-
-    .pill-danger {
-      color: var(--danger);
-      border-color: rgba(244, 111, 111, 0.3);
-    }
-
-    .pill-blue {
-      color: var(--blue);
-      border-color: rgba(127, 180, 255, 0.3);
+      font-size: 0.9rem;
     }
 
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 13px;
     }
 
     .form-grid .wide {
@@ -315,7 +535,10 @@
       display: grid;
       gap: 6px;
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .checks {
@@ -329,12 +552,15 @@
       align-items: center;
       gap: 8px;
       min-height: 38px;
-      padding: 8px;
-      color: var(--text);
+      padding: 8px 9px;
+      color: var(--ink-2);
       border: 1px solid var(--line);
-      background: #111216;
+      background: #fff;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.78rem;
+      font-weight: 650;
+      letter-spacing: 0;
+      text-transform: none;
     }
 
     .summary-line {
@@ -342,29 +568,40 @@
       justify-content: space-between;
       gap: 10px;
       color: var(--muted);
-      padding: 10px 0;
+      padding-top: 14px;
+      margin-top: 14px;
       border-top: 1px solid var(--line);
-      margin-top: 4px;
+      font-size: 0.84rem;
     }
 
     .summary-line strong {
-      color: var(--text);
+      color: var(--ink);
+      text-transform: capitalize;
     }
 
     .hours {
       display: grid;
       gap: 8px;
+      padding: 18px;
     }
 
     .hour-row {
       display: grid;
-      grid-template-columns: 100px 74px 1fr 1fr;
+      grid-template-columns: 1fr auto;
       gap: 8px;
       align-items: center;
       padding: 9px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: var(--panel-3);
+      background: #fff;
+    }
+
+    .hour-row strong {
+      font-size: 0.88rem;
+    }
+
+    .hour-row .check {
+      justify-self: end;
     }
 
     .feed {
@@ -372,18 +609,46 @@
       gap: 10px;
     }
 
+    .list {
+      display: grid;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 9px;
+      padding: 18px;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .mini-row-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
     dialog {
-      width: min(820px, calc(100% - 28px));
+      width: min(830px, calc(100% - 28px));
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 0;
-      background: var(--panel);
-      color: var(--text);
-      box-shadow: 0 30px 120px rgba(0, 0, 0, 0.68);
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 28px 90px rgba(23, 22, 21, 0.28);
     }
 
     dialog::backdrop {
-      background: rgba(0, 0, 0, 0.68);
+      background: rgba(23, 22, 21, 0.42);
     }
 
     .modal-body {
@@ -397,6 +662,11 @@
       gap: 12px;
       padding: 16px 18px;
       border-bottom: 1px solid var(--line);
+      background: #fbf8f3;
+    }
+
+    .modal-head h2 {
+      font-size: 1rem;
     }
 
     .modal-actions {
@@ -406,10 +676,44 @@
       padding: 14px 18px 18px;
       border-top: 1px solid var(--line);
       flex-wrap: wrap;
+      background: #fbf8f3;
+    }
+
+    @media (max-width: 1180px) {
+      .admin-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+        padding: 13px 14px;
+      }
+
+      .brand {
+        border-bottom: 0;
+        padding-bottom: 8px;
+      }
+
+      .side-nav {
+        grid-auto-flow: column;
+        grid-auto-columns: max-content;
+        overflow-x: auto;
+        padding: 8px 0 4px;
+      }
+
+      .side-note {
+        display: none;
+      }
+
+      .topbar {
+        top: 0;
+      }
     }
 
     @media (max-width: 1040px) {
-      .topbar, .layout {
+      .topbar,
+      .layout {
         grid-template-columns: 1fr;
       }
 
@@ -423,7 +727,18 @@
     }
 
     @media (max-width: 760px) {
-      .login, .filters, .form-grid, .checks, .hour-row, .item {
+      .content,
+      .topbar {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .login,
+      .filters,
+      .form-grid,
+      .checks,
+      .hour-row,
+      .mini-row {
         grid-template-columns: 1fr;
       }
 
@@ -431,186 +746,261 @@
         grid-template-columns: 1fr;
       }
 
-      .item-actions, .panel-actions {
+      .panel-actions,
+      .row-actions,
+      .mini-row-actions {
         justify-content: flex-start;
       }
     }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <header class="topbar">
-      <div>
-        <h1>TKS Booking Admin</h1>
-        <p class="subtle">Manage bookings, subscriptions, working hours, blocked slots, customer history, and iPhone calendar sync.</p>
-      </div>
-      <div>
-        <div class="login">
-          <input id="tokenInput" class="input" type="password" autocomplete="current-password" placeholder="Admin token">
-          <button class="btn btn-primary" type="button" onclick="saveToken()">Load</button>
-          <button class="btn" type="button" onclick="loadState()">Refresh</button>
+  <div class="admin-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">TKS</div>
+        <div>
+          <div class="brand-title">TKS Services</div>
+          <div class="brand-subtitle">Booking admin</div>
         </div>
-        <p id="status" class="status"></p>
-      </div>
-    </header>
-
-    <section class="stats" aria-label="Booking summary">
-      <div class="stat"><span>Today</span><strong id="statToday">0</strong></div>
-      <div class="stat"><span>Upcoming</span><strong id="statUpcoming">0</strong></div>
-      <div class="stat"><span>Active Plans</span><strong id="statSubs">0</strong></div>
-      <div class="stat"><span>Blocked Slots</span><strong id="statBlocks">0</strong></div>
-    </section>
-
-    <section class="layout">
-      <div class="stack">
-        <section class="panel">
-          <div class="panel-head">
-            <h2>Bookings</h2>
-            <div class="panel-actions">
-              <button class="btn btn-small" type="button" onclick="resetFilters()">Clear Filters</button>
-              <button class="btn btn-small btn-primary" type="button" onclick="document.getElementById('createBookingName').focus()">New Booking</button>
-            </div>
-          </div>
-          <div class="filters">
-            <input id="bookingSearch" class="input" type="search" placeholder="Search customer, phone, service, vehicle">
-            <select id="statusFilter" class="select">
-              <option value="confirmed">Confirmed</option>
-              <option value="all">All statuses</option>
-              <option value="cancelled">Cancelled</option>
-              <option value="completed">Completed</option>
-            </select>
-            <select id="typeFilter" class="select">
-              <option value="all">All booking types</option>
-              <option value="booking">One-off</option>
-              <option value="subscription_initial">Plan initial</option>
-              <option value="subscription_visit">Plan visits</option>
-            </select>
-            <input id="dateFilter" class="input" type="date">
-          </div>
-          <div id="bookingsList" class="list">
-            <div class="empty">Enter the admin token to load bookings.</div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head">
-            <h2>Subscriptions</h2>
-            <span id="subscriptionCount" class="pill">0 active</span>
-          </div>
-          <div id="subscriptionsList" class="list">
-            <div class="empty">No subscriptions loaded.</div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head">
-            <h2>Customers</h2>
-            <span id="customerCount" class="pill">0 customers</span>
-          </div>
-          <div id="customersList" class="list">
-            <div class="empty">No customers loaded.</div>
-          </div>
-        </section>
       </div>
 
-      <div class="stack">
-        <section class="panel">
-          <div class="panel-head">
-            <h2>Create Booking</h2>
-            <span id="createEstimate" class="pill pill-blue">Select a service</span>
-          </div>
-          <form id="createBookingForm" class="form-grid">
-            <label class="wide">Service
-              <select id="createService" class="select" required></select>
-            </label>
-            <label>Date
-              <input id="createDate" class="input" type="date" required>
-            </label>
-            <label>Start
-              <input id="createTime" class="input" type="time" value="09:00" required>
-            </label>
-            <label>End
-              <input id="createEndTime" class="input" type="time">
-            </label>
-            <label>Service Price
-              <input id="createServicePrice" class="input" type="number" min="0" step="1" value="0">
-            </label>
-            <label class="wide">Add-ons
-              <div id="createAddons" class="checks"></div>
-            </label>
-            <label>Total Price
-              <input id="createTotalPrice" class="input" type="number" min="0" step="1" value="0">
-            </label>
-            <label>Name
-              <input id="createBookingName" class="input" type="text" required>
-            </label>
-            <label>Phone
-              <input id="createBookingPhone" class="input" type="tel" required>
-            </label>
-            <label>Email
-              <input id="createBookingEmail" class="input" type="email">
-            </label>
-            <label>Vehicle
-              <input id="createBookingVehicle" class="input" type="text">
-            </label>
-            <label class="wide">Location
-              <input id="createBookingLocation" class="input" type="text" value="Mobile - Customer Location">
-            </label>
-            <label class="wide">Notes
-              <textarea id="createBookingNotes" class="textarea"></textarea>
-            </label>
-            <button class="btn btn-primary wide" type="submit">Create Booking</button>
-          </form>
-        </section>
+      <nav class="side-nav" aria-label="Admin navigation">
+        <a class="side-link active" href="#overview">
+          <span data-icon="dashboard"></span>
+          Dashboard
+        </a>
+        <a class="side-link" href="#bookingsPanel">
+          <span data-icon="calendar"></span>
+          Bookings
+        </a>
+        <a class="side-link" href="#createPanel">
+          <span data-icon="plus"></span>
+          Create Booking
+        </a>
+        <a class="side-link" href="#subscriptionsPanel">
+          <span data-icon="users"></span>
+          Subscriptions
+        </a>
+        <a class="side-link" href="#availabilityPanel">
+          <span data-icon="clock"></span>
+          Availability
+        </a>
+        <a class="side-link" href="#calendarPanel">
+          <span data-icon="link"></span>
+          Calendar Feed
+        </a>
+      </nav>
 
-        <section class="panel">
-          <div class="panel-head">
-            <h2>iPhone Calendar Feed</h2>
-            <span id="timezonePill" class="pill">Europe/London</span>
-          </div>
-          <div class="feed">
-            <input id="feedUrl" class="input" readonly placeholder="Load admin to generate feed URL">
-            <button class="btn btn-primary" type="button" onclick="copyFeed()">Copy Calendar Link</button>
-            <p class="subtle">On iPhone: Settings, Calendar, Accounts, Add Account, Other, Add Subscribed Calendar, then paste this URL.</p>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head">
-            <h2>Block Out Slots</h2>
-            <button id="resetBlockoutButton" class="btn btn-small btn-ghost" type="button" onclick="resetBlockoutForm()">New Block</button>
-          </div>
-          <form id="blockoutForm" class="form-grid">
-            <input id="editingBlockoutId" type="hidden">
-            <label class="wide">Date
-              <input id="blockDate" class="input" type="date" required>
-            </label>
-            <label>Start
-              <input id="blockStart" class="input" type="time" value="09:00" required>
-            </label>
-            <label>End
-              <input id="blockEnd" class="input" type="time" value="12:00" required>
-            </label>
-            <label class="wide">Reason
-              <input id="blockReason" class="input" type="text" value="Unavailable">
-            </label>
-            <button id="blockoutSubmit" class="btn btn-primary wide" type="submit">Add Block</button>
-          </form>
-          <div id="blockoutsList" class="list" style="margin-top:14px">
-            <div class="empty">No blockouts loaded.</div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head">
-            <h2>Working Hours</h2>
-          </div>
-          <div id="hoursForm" class="hours"></div>
-          <button class="btn btn-primary" type="button" style="margin-top:12px;width:100%" onclick="saveHours()">Save Hours</button>
-        </section>
+      <div class="side-note">
+        Private admin console. Confirmed bookings, visits, and blockouts appear in the subscribed calendar feed.
       </div>
-    </section>
-  </main>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1>TKS Booking Admin</h1>
+          <p class="topbar-kicker">Mobile valeting schedule and subscription management</p>
+        </div>
+        <div>
+          <div class="login">
+            <input id="tokenInput" class="input" type="password" autocomplete="current-password" placeholder="Admin token">
+            <button class="btn btn-primary" type="button" onclick="saveToken()">Load</button>
+            <button class="btn" type="button" onclick="loadState()">Refresh</button>
+          </div>
+          <p id="status" class="status"></p>
+        </div>
+      </header>
+
+      <section id="overview" class="content">
+        <section class="stats" aria-label="Booking summary">
+          <div class="stat"><span>Today</span><strong id="statToday">0</strong></div>
+          <div class="stat"><span>Upcoming</span><strong id="statUpcoming">0</strong></div>
+          <div class="stat"><span>Active Plans</span><strong id="statSubs">0</strong></div>
+          <div class="stat"><span>Blocked Slots</span><strong id="statBlocks">0</strong></div>
+        </section>
+
+        <section class="layout">
+          <div class="stack">
+            <section id="bookingsPanel" class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Bookings</h2>
+                  <p class="panel-caption">Search, reschedule, complete, cancel, or restore bookings.</p>
+                </div>
+                <div class="panel-actions">
+                  <button class="btn btn-small" type="button" onclick="resetFilters()">Clear Filters</button>
+                  <button class="btn btn-small btn-primary" type="button" onclick="document.getElementById('createBookingName').focus()">New Booking</button>
+                </div>
+              </div>
+              <div class="filters">
+                <input id="bookingSearch" class="input" type="search" placeholder="Search customer, phone, service, vehicle">
+                <select id="statusFilter" class="select">
+                  <option value="confirmed">Confirmed</option>
+                  <option value="all">All statuses</option>
+                  <option value="cancelled">Cancelled</option>
+                  <option value="completed">Completed</option>
+                </select>
+                <select id="typeFilter" class="select">
+                  <option value="all">All booking types</option>
+                  <option value="booking">One-off</option>
+                  <option value="subscription_initial">Plan initial</option>
+                  <option value="subscription_visit">Plan visits</option>
+                </select>
+                <input id="dateFilter" class="input" type="date">
+              </div>
+              <div id="bookingsList">
+                <div class="empty">Enter the admin token to load bookings.</div>
+              </div>
+            </section>
+
+            <section id="subscriptionsPanel" class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Subscriptions</h2>
+                  <p class="panel-caption">Edit plan details, generate visits, or cancel a plan.</p>
+                </div>
+                <span id="subscriptionCount" class="badge badge-neutral">0 active</span>
+              </div>
+              <div id="subscriptionsList">
+                <div class="empty">No subscriptions loaded.</div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Customers</h2>
+                  <p class="panel-caption">Recent customer history from booking records.</p>
+                </div>
+                <span id="customerCount" class="badge badge-neutral">0 customers</span>
+              </div>
+              <div id="customersList">
+                <div class="empty">No customers loaded.</div>
+              </div>
+            </section>
+          </div>
+
+          <div class="stack">
+            <section id="createPanel" class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Create Booking</h2>
+                  <p class="panel-caption">Add a booking directly into the diary.</p>
+                </div>
+                <span id="createEstimate" class="badge badge-blue">Select a service</span>
+              </div>
+              <div class="panel-body">
+                <form id="createBookingForm" class="form-grid">
+                  <label class="wide">Service
+                    <select id="createService" class="select" required></select>
+                  </label>
+                  <label>Date
+                    <input id="createDate" class="input" type="date" required>
+                  </label>
+                  <label>Start
+                    <input id="createTime" class="input" type="time" value="09:00" required>
+                  </label>
+                  <label>End
+                    <input id="createEndTime" class="input" type="time">
+                  </label>
+                  <label>Service Price
+                    <input id="createServicePrice" class="input" type="number" min="0" step="1" value="0">
+                  </label>
+                  <label class="wide">Add-ons
+                    <div id="createAddons" class="checks"></div>
+                  </label>
+                  <label>Total Price
+                    <input id="createTotalPrice" class="input" type="number" min="0" step="1" value="0">
+                  </label>
+                  <label>Name
+                    <input id="createBookingName" class="input" type="text" required>
+                  </label>
+                  <label>Phone
+                    <input id="createBookingPhone" class="input" type="tel" required>
+                  </label>
+                  <label>Email
+                    <input id="createBookingEmail" class="input" type="email">
+                  </label>
+                  <label>Vehicle
+                    <input id="createBookingVehicle" class="input" type="text">
+                  </label>
+                  <label class="wide">Location
+                    <input id="createBookingLocation" class="input" type="text" value="Mobile - Customer Location">
+                  </label>
+                  <label class="wide">Notes
+                    <textarea id="createBookingNotes" class="textarea"></textarea>
+                  </label>
+                  <button class="btn btn-primary wide" type="submit">Create Booking</button>
+                </form>
+              </div>
+            </section>
+
+            <section id="calendarPanel" class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>iPhone Calendar Feed</h2>
+                  <p class="panel-caption">Copy the private subscribed calendar URL.</p>
+                </div>
+                <span id="timezonePill" class="badge badge-neutral">Europe/London</span>
+              </div>
+              <div class="panel-body">
+                <div class="feed">
+                  <input id="feedUrl" class="input" readonly placeholder="Load admin to generate feed URL">
+                  <button class="btn btn-primary" type="button" onclick="copyFeed()">Copy Calendar Link</button>
+                </div>
+              </div>
+            </section>
+
+            <section id="availabilityPanel" class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Block Out Slots</h2>
+                  <p class="panel-caption">Mark a time as unavailable.</p>
+                </div>
+                <button id="resetBlockoutButton" class="btn btn-small btn-ghost" type="button" onclick="resetBlockoutForm()">New Block</button>
+              </div>
+              <div class="panel-body">
+                <form id="blockoutForm" class="form-grid">
+                  <input id="editingBlockoutId" type="hidden">
+                  <label class="wide">Date
+                    <input id="blockDate" class="input" type="date" required>
+                  </label>
+                  <label>Start
+                    <input id="blockStart" class="input" type="time" value="09:00" required>
+                  </label>
+                  <label>End
+                    <input id="blockEnd" class="input" type="time" value="12:00" required>
+                  </label>
+                  <label class="wide">Reason
+                    <input id="blockReason" class="input" type="text" value="Unavailable">
+                  </label>
+                  <button id="blockoutSubmit" class="btn btn-primary wide" type="submit">Add Block</button>
+                </form>
+              </div>
+              <div id="blockoutsList">
+                <div class="empty">No blockouts loaded.</div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Working Hours</h2>
+                  <p class="panel-caption">Set the default weekly availability.</p>
+                </div>
+              </div>
+              <div id="hoursForm" class="hours"></div>
+              <div class="panel-body" style="padding-top:0">
+                <button class="btn btn-primary" type="button" style="width:100%" onclick="saveHours()">Save Hours</button>
+              </div>
+            </section>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
 
   <dialog id="bookingDialog">
     <form id="editBookingForm" method="dialog">
@@ -801,6 +1191,27 @@
     document.getElementById('createDate').min = todayInputValue();
     document.getElementById('blockDate').min = todayInputValue();
 
+    function icon(name) {
+      const icons = {
+        dashboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 13h7V4H4v9Z"/><path d="M13 20h7V4h-7v16Z"/><path d="M4 20h7v-5H4v5Z"/></svg>',
+        calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 2v4"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M5 5h14a2 2 0 0 1 2 2v14H3V7a2 2 0 0 1 2-2Z"/></svg>',
+        plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14"/><path d="M5 12h14"/></svg>',
+        users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+        link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l2-2a5 5 0 0 0-7.07-7.07l-1.14 1.14"/><path d="M14 11a5 5 0 0 0-7.54-.54l-2 2a5 5 0 0 0 7.07 7.07l1.14-1.14"/></svg>',
+        edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>',
+        check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 5 5L20 7"/></svg>',
+        x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+        restore: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>',
+        trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 18h10l1-18"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>',
+      };
+      return icons[name] || '';
+    }
+
+    document.querySelectorAll('[data-icon]').forEach(node => {
+      node.innerHTML = icon(node.dataset.icon);
+    });
+
     function todayInputValue() {
       const date = new Date();
       date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
@@ -813,7 +1224,7 @@
 
     function setStatus(message, tone) {
       statusEl.textContent = message || '';
-      statusEl.style.color = tone === 'error' ? 'var(--danger)' : tone === 'ok' ? 'var(--ok)' : 'var(--muted)';
+      statusEl.style.color = tone === 'error' ? 'var(--red)' : tone === 'ok' ? 'var(--green)' : 'var(--muted)';
     }
 
     function escapeHtml(value) {
@@ -962,12 +1373,12 @@
 
     function statusPill(status) {
       const className = status === 'confirmed' || status === 'active'
-        ? 'pill pill-ok'
+        ? 'badge badge-ok'
         : status === 'cancelled'
-          ? 'pill pill-danger'
+          ? 'badge badge-danger'
           : status === 'completed'
-            ? 'pill pill-blue'
-            : 'pill pill-warn';
+            ? 'badge badge-blue'
+            : 'badge badge-warn';
       return `<span class="${className}">${escapeHtml(status)}</span>`;
     }
 
@@ -977,6 +1388,10 @@
         subscription_initial: 'Plan initial',
         subscription_visit: 'Plan visit',
       }[type] || type;
+    }
+
+    function actionButton(label, iconName, handler, extraClass = '') {
+      return `<button class="btn icon-button ${extraClass}" type="button" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}" onclick="${handler}">${icon(iconName)}</button>`;
     }
 
     function filteredBookings() {
@@ -1008,25 +1423,51 @@
         el.innerHTML = '<div class="empty">No bookings match the current filters.</div>';
         return;
       }
-      el.innerHTML = bookings.map(booking => `
-        <article class="item">
-          <div>
-            <div class="item-title">${escapeHtml(booking.date_display)} ${escapeHtml(booking.display_time)}-${escapeHtml(booking.display_end_time)}</div>
-            <div class="item-meta">${escapeHtml(booking.service_name)} - ${escapeHtml(typeLabel(booking.type))} - ${money(booking.total_price)}</div>
-            <div class="item-meta">${escapeHtml(booking.name)} - ${escapeHtml(booking.phone)}${booking.email ? ' - ' + escapeHtml(booking.email) : ''}</div>
-            <div class="item-meta">${escapeHtml(booking.vehicle || 'Vehicle not set')}${booking.location ? ' - ' + escapeHtml(booking.location) : ''}</div>
-            ${booking.addon_names && booking.addon_names.length ? `<div class="item-meta">Add-ons: ${escapeHtml(booking.addon_names.join(', '))}</div>` : ''}
-            ${booking.notes ? `<div class="item-meta">${escapeHtml(booking.notes)}</div>` : ''}
-            ${booking.cancelled_reason ? `<div class="item-meta">Cancelled: ${escapeHtml(booking.cancelled_reason)}</div>` : ''}
-          </div>
-          <div class="item-actions">
-            ${statusPill(booking.status)}
-            <button class="btn btn-small" type="button" onclick="openBookingDialog('${booking.id}')">Edit</button>
-            ${booking.status === 'confirmed' ? `<button class="btn btn-small" type="button" onclick="completeBooking('${booking.id}')">Complete</button>` : ''}
-            ${booking.status === 'confirmed' ? `<button class="btn btn-small btn-danger" type="button" onclick="cancelBooking('${booking.id}')">Cancel</button>` : `<button class="btn btn-small" type="button" onclick="restoreBooking('${booking.id}')">Restore</button>`}
-          </div>
-        </article>
-      `).join('');
+      el.innerHTML = `
+        <div class="table-scroll">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Customer</th>
+                <th>Service</th>
+                <th>Status</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${bookings.map(booking => `
+                <tr>
+                  <td>
+                    <div class="cell-title">${escapeHtml(booking.date_display)}</div>
+                    <div class="cell-sub">${escapeHtml(booking.display_time)}-${escapeHtml(booking.display_end_time)}</div>
+                  </td>
+                  <td>
+                    <div class="cell-title">${escapeHtml(booking.name)}</div>
+                    <div class="cell-sub">${escapeHtml(booking.phone)}${booking.email ? ' - ' + escapeHtml(booking.email) : ''}</div>
+                    <div class="cell-sub">${escapeHtml(booking.vehicle || 'Vehicle not set')}${booking.location ? ' - ' + escapeHtml(booking.location) : ''}</div>
+                  </td>
+                  <td>
+                    <div class="cell-title">${escapeHtml(booking.service_name)}</div>
+                    <div class="cell-sub">${escapeHtml(typeLabel(booking.type))} - ${money(booking.total_price)}</div>
+                    ${booking.addon_names && booking.addon_names.length ? `<div class="cell-sub">Add-ons: ${escapeHtml(booking.addon_names.join(', '))}</div>` : ''}
+                    ${booking.notes ? `<div class="cell-sub">${escapeHtml(booking.notes)}</div>` : ''}
+                    ${booking.cancelled_reason ? `<div class="cell-sub">Cancelled: ${escapeHtml(booking.cancelled_reason)}</div>` : ''}
+                  </td>
+                  <td>${statusPill(booking.status)}</td>
+                  <td>
+                    <div class="row-actions">
+                      ${actionButton('Edit booking', 'edit', `openBookingDialog('${booking.id}')`)}
+                      ${booking.status === 'confirmed' ? actionButton('Mark complete', 'check', `completeBooking('${booking.id}')`) : ''}
+                      ${booking.status === 'confirmed' ? actionButton('Cancel booking', 'x', `cancelBooking('${booking.id}')`, 'danger') : actionButton('Restore booking', 'restore', `restoreBooking('${booking.id}')`)}
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
     }
 
     function renderSubscriptions() {
@@ -1037,25 +1478,51 @@
         el.innerHTML = '<div class="empty">No subscriptions yet.</div>';
         return;
       }
-      el.innerHTML = state.subscriptions.map(sub => {
-        const visitCount = state.bookings.filter(booking => booking.subscription_id === sub.id && booking.status === 'confirmed').length;
-        return `
-          <article class="item">
-            <div>
-              <div class="item-title">${escapeHtml(sub.name)} - ${escapeHtml(sub.vehicle || 'Vehicle not set')}</div>
-              <div class="item-meta">Started ${escapeHtml(sub.date_display)} - ${escapeHtml(sub.preferred_day || 'Any day')} - ${escapeHtml(sub.preferred_time || sub.display_time)}</div>
-              <div class="item-meta">${escapeHtml(sub.phone)}${sub.email ? ' - ' + escapeHtml(sub.email) : ''}${sub.postcode ? ' - ' + escapeHtml(sub.postcode) : ''}</div>
-              <div class="item-meta">${visitCount} confirmed future/loaded visits</div>
-            </div>
-            <div class="item-actions">
-              ${statusPill(sub.status)}
-              <button class="btn btn-small" type="button" onclick="openSubscriptionDialog('${sub.id}')">Edit</button>
-              ${sub.status === 'active' ? `<button class="btn btn-small" type="button" onclick="addVisit('${sub.id}')">Add Visit</button>` : ''}
-              ${sub.status === 'active' ? `<button class="btn btn-small btn-danger" type="button" onclick="cancelSubscription('${sub.id}')">Cancel Plan</button>` : ''}
-            </div>
-          </article>
-        `;
-      }).join('');
+      el.innerHTML = `
+        <div class="table-scroll">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Plan</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.subscriptions.map(sub => {
+                const visitCount = state.bookings.filter(booking => booking.subscription_id === sub.id && booking.status === 'confirmed').length;
+                return `
+                  <tr>
+                    <td>
+                      <div class="cell-title">${escapeHtml(sub.name)}</div>
+                      <div class="cell-sub">${escapeHtml(sub.vehicle || 'Vehicle not set')}</div>
+                    </td>
+                    <td>
+                      <div class="cell-title">Started ${escapeHtml(sub.date_display)}</div>
+                      <div class="cell-sub">${escapeHtml(sub.preferred_day || 'Any day')} - ${escapeHtml(sub.preferred_time || sub.display_time)}</div>
+                      <div class="cell-sub">${visitCount} confirmed future/loaded visits</div>
+                    </td>
+                    <td>
+                      <div class="cell-title">${escapeHtml(sub.phone)}</div>
+                      <div class="cell-sub">${sub.email ? escapeHtml(sub.email) : 'Email not set'}${sub.postcode ? ' - ' + escapeHtml(sub.postcode) : ''}</div>
+                    </td>
+                    <td>${statusPill(sub.status)}</td>
+                    <td>
+                      <div class="row-actions">
+                        ${actionButton('Edit subscription', 'edit', `openSubscriptionDialog('${sub.id}')`)}
+                        ${sub.status === 'active' ? actionButton('Add visit', 'plus', `addVisit('${sub.id}')`) : ''}
+                        ${sub.status === 'active' ? actionButton('Cancel plan', 'x', `cancelSubscription('${sub.id}')`, 'danger') : ''}
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
     }
 
     function renderCustomers() {
@@ -1065,19 +1532,35 @@
         el.innerHTML = '<div class="empty">No customers yet.</div>';
         return;
       }
-      el.innerHTML = state.customers.slice(0, 20).map(customer => `
-        <article class="item">
-          <div>
-            <div class="item-title">${escapeHtml(customer.name || 'Unnamed customer')}</div>
-            <div class="item-meta">${escapeHtml(customer.phone || '')}${customer.email ? ' - ' + escapeHtml(customer.email) : ''}</div>
-            <div class="item-meta">${escapeHtml(customer.vehicle || 'Vehicle not set')} - Last booking ${escapeHtml(customer.last_booking_date || 'n/a')}</div>
-          </div>
-          <div class="item-actions">
-            <span class="pill">${Number(customer.booking_count || 0)} visits</span>
-            <span class="pill">${money(customer.total_spend)}</span>
-          </div>
-        </article>
-      `).join('');
+      el.innerHTML = `
+        <div class="table-scroll">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Vehicle</th>
+                <th>Last Booking</th>
+                <th>Visits</th>
+                <th>Spend</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.customers.slice(0, 30).map(customer => `
+                <tr>
+                  <td>
+                    <div class="cell-title">${escapeHtml(customer.name || 'Unnamed customer')}</div>
+                    <div class="cell-sub">${escapeHtml(customer.phone || '')}${customer.email ? ' - ' + escapeHtml(customer.email) : ''}</div>
+                  </td>
+                  <td>${escapeHtml(customer.vehicle || 'Vehicle not set')}</td>
+                  <td>${escapeHtml(customer.last_booking_date || 'n/a')}</td>
+                  <td><span class="badge badge-neutral">${Number(customer.booking_count || 0)} visits</span></td>
+                  <td>${money(customer.total_spend)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
     }
 
     function renderBlockouts() {
@@ -1086,18 +1569,22 @@
         el.innerHTML = '<div class="empty">No upcoming blocked slots.</div>';
         return;
       }
-      el.innerHTML = state.blockouts.map(blockout => `
-        <article class="item">
-          <div>
-            <div class="item-title">${escapeHtml(blockout.date_display)} ${escapeHtml(blockout.display_time)}-${escapeHtml(blockout.display_end_time)}</div>
-            <div class="item-meta">${escapeHtml(blockout.reason)}</div>
-          </div>
-          <div class="item-actions">
-            <button class="btn btn-small" type="button" onclick="editBlockout('${blockout.id}')">Edit</button>
-            <button class="btn btn-small btn-danger" type="button" onclick="deleteBlockout('${blockout.id}')">Remove</button>
-          </div>
-        </article>
-      `).join('');
+      el.innerHTML = `
+        <div class="mini-list">
+          ${state.blockouts.map(blockout => `
+            <article class="mini-row">
+              <div>
+                <div class="cell-title">${escapeHtml(blockout.date_display)}</div>
+                <div class="cell-sub">${escapeHtml(blockout.display_time)}-${escapeHtml(blockout.display_end_time)} - ${escapeHtml(blockout.reason)}</div>
+              </div>
+              <div class="mini-row-actions">
+                ${actionButton('Edit blockout', 'edit', `editBlockout('${blockout.id}')`)}
+                ${actionButton('Remove blockout', 'trash', `deleteBlockout('${blockout.id}')`, 'danger')}
+              </div>
+            </article>
+          `).join('')}
+        </div>
+      `;
     }
 
     function renderHours() {
