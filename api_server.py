@@ -639,6 +639,7 @@ def available_slots_for_date(
     working_end = time_to_minutes(hours["end_time"])
     current = working_start
     slots: List[Dict[str, str]] = []
+    busy = busy_ranges(conn, date_value)
 
     now_local = datetime.now(LOCAL_TZ)
     is_today = parsed_date == now_local.date()
@@ -647,8 +648,8 @@ def available_slots_for_date(
         if not is_today or current > (now_local.hour * 60 + now_local.minute):
             start_time = minutes_to_time(current)
             end_time = minutes_to_time(current + duration)
-            available, _ = slot_availability(conn, date_value, start_time, end_time)
-            if available:
+            has_conflict = any(ranges_overlap(current, current + duration, item["start"], item["end"]) for item in busy)
+            if not has_conflict:
                 slots.append(
                     {
                         "time": start_time,
@@ -1116,6 +1117,16 @@ async def head_admin() -> Response:
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon() -> Response:
     return Response(status_code=204)
+
+
+@app.get("/base.css", include_in_schema=False)
+async def serve_base_css() -> FileResponse:
+    return FileResponse(BASE_DIR / "base.css")
+
+
+@app.get("/style.css", include_in_schema=False)
+async def serve_style_css() -> FileResponse:
+    return FileResponse(BASE_DIR / "style.css")
 
 
 @app.get("/api/health")

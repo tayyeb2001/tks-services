@@ -35,7 +35,7 @@
 <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js" defer></script>
 
 <link rel="stylesheet" href="./base.css">
-<link rel="stylesheet" href="./style.css?v=9">
+<link rel="stylesheet" href="./style.css?v=10">
 </head>
 <body>
 
@@ -1060,6 +1060,9 @@ function selectService(id, name, price) {
   booking.servicePrice = price;
   booking.date = null;
   booking.time = null;
+  booking.dateDisplay = null;
+  booking.timeDisplay = null;
+  booking.endTime = null;
   document.getElementById('step1Next').disabled = false;
   document.getElementById('addonsSection').classList.remove('hidden');
   renderServiceList();
@@ -1108,6 +1111,10 @@ function goToStep(step) {
 // Load available dates
 async function loadDates() {
   const grid = document.getElementById('dateGrid');
+  const timeSlots = document.getElementById('timeSlotsContainer');
+  grid.innerHTML = '<div class="slots-loading"><div class="loading-spinner"></div><p style="margin-top:var(--space-3)">Loading available dates...</p></div>';
+  timeSlots.classList.add('hidden');
+  document.getElementById('step2Next').disabled = true;
   
   try {
     const params = new URLSearchParams({
@@ -1115,11 +1122,17 @@ async function loadDates() {
       addons: booking.addons.join(','),
     });
     const res = await fetch(`${API}/api/available-dates?${params.toString()}`);
+    if (!res.ok) throw new Error('Could not load available dates');
     const data = await res.json();
+    const dates = Array.isArray(data.dates) ? data.dates : [];
+    if (!dates.length) {
+      grid.innerHTML = '<p class="booking-empty-state">No dates are available right now. Please contact us and we will get you booked in.</p>';
+      return;
+    }
     
-    grid.innerHTML = data.dates.map(d => `
+    grid.innerHTML = dates.map(d => `
       <button class="date-btn ${booking.date === d.date ? 'selected' : ''}" 
-              onclick="selectDate('${d.date}', '${d.display}')">
+              onclick="selectDate(this, '${d.date}', '${d.display}')">
         <div class="date-btn__day">${d.day_name.substring(0,3)}</div>
         <div class="date-btn__date">${d.short}</div>
       </button>
@@ -1140,7 +1153,7 @@ async function loadDates() {
     }
     grid.innerHTML = dates.map(d => `
       <button class="date-btn ${booking.date === d.date ? 'selected' : ''}" 
-              onclick="selectDate('${d.date}', '${d.display}')">
+              onclick="selectDate(this, '${d.date}', '${d.display}')">
         <div class="date-btn__day">${d.day}</div>
         <div class="date-btn__date">${d.display}</div>
       </button>
@@ -1148,14 +1161,16 @@ async function loadDates() {
   }
 }
 
-async function selectDate(date, display) {
+async function selectDate(button, date, display) {
   booking.date = date;
   booking.dateDisplay = display;
   booking.time = null;
+  booking.timeDisplay = null;
+  booking.endTime = null;
   
   // Update date buttons
   document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('selected'));
-  event.target.closest('.date-btn').classList.add('selected');
+  button.classList.add('selected');
   
   // Show time slots
   const container = document.getElementById('timeSlotsContainer');
@@ -1171,13 +1186,15 @@ async function selectDate(date, display) {
       addons: booking.addons.join(','),
     });
     const res = await fetch(`${API}/api/available-slots?${params.toString()}`);
+    if (!res.ok) throw new Error('Could not load available times');
     const data = await res.json();
+    const slots = Array.isArray(data.slots) ? data.slots : [];
     
-    if (data.slots.length === 0) {
+    if (slots.length === 0) {
       content.innerHTML = '<p style="text-align:center;color:var(--color-text-muted);padding:var(--space-6)">No available slots on this date. Please try another day.</p>';
     } else {
-      content.innerHTML = `<div class="time-slots">${data.slots.map(s => `
-        <button class="time-btn" onclick="selectTime('${s.time}', '${s.display}', '${s.end_time}')">${s.display}</button>
+      content.innerHTML = `<div class="time-slots">${slots.map(s => `
+        <button class="time-btn" onclick="selectTime(this, '${s.time}', '${s.display}', '${s.end_time}')">${s.display}</button>
       `).join('')}</div>`;
     }
   } catch (e) {
@@ -1193,19 +1210,19 @@ async function selectDate(date, display) {
       }
     }
     content.innerHTML = `<div class="time-slots">${slots.map(s => `
-      <button class="time-btn" onclick="selectTime('${s.time}', '${s.display}', '${s.time}')">${s.display}</button>
+      <button class="time-btn" onclick="selectTime(this, '${s.time}', '${s.display}', '${s.time}')">${s.display}</button>
     `).join('')}</div>`;
   }
 }
 
-function selectTime(time, display, endTime) {
+function selectTime(button, time, display, endTime) {
   booking.time = time;
   booking.timeDisplay = display;
   booking.endTime = endTime;
   document.getElementById('step2Next').disabled = false;
   
   document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
-  event.target.classList.add('selected');
+  button.classList.add('selected');
 }
 
 function renderSummary() {
